@@ -61,9 +61,6 @@ const userSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Role",
     },
-    average_deal_size: {
-      type: String,
-    },
     track_record: {
       type: Boolean,
       require: true,
@@ -84,12 +81,7 @@ const userSchema = new mongoose.Schema(
     bound: {
       type: String,
     },
-    total_chat: {
-      type: Number,
-    },
-    total_client: {
-      type: Number,
-    },
+
     is_deleted: {
       type: Boolean,
       default: false,
