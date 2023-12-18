@@ -10,7 +10,7 @@ const rootRoutes = require("./routes/index");
 const logger = require("./logger");
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: "*" }));
 
 app.use(rootRoutes);
 

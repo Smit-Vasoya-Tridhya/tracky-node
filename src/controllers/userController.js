@@ -13,3 +13,52 @@ exports.signUp = catchAsyncError(async (req, res, next) => {
 
   sendResponse(res, true, returnMessage("userRegisterd"), registeredUser, 200);
 });
+
+exports.login = catchAsyncError(async (req, res, next) => {
+  const loggedInUser = await userService.login(req.body);
+  if (typeof loggedInUser === "string")
+    return next(new AppError(loggedInUser, 400));
+
+  sendResponse(res, true, returnMessage("userLogin"), loggedInUser, 200);
+});
+
+exports.verifyEmails = catchAsyncError(async (req, res, next) => {
+  const verify = await userService.verifyEmail(req.query);
+  if (typeof verify === "string") return next(new AppError(verify, 400));
+  sendResponse(res, true, returnMessage("userVerify"), verify, 200);
+});
+
+exports.googleSignIn = catchAsyncError(async (req, res, next) => {
+  const googleSignIn = await userService.googleSign(req.body);
+  if (typeof googleSignIn === "string")
+    return next(new AppError(googleSignIn, 400));
+  sendResponse(res, true, returnMessage("userLogin"), googleSignIn, 200);
+});
+
+exports.forgetPassword = catchAsyncError(async (req, res, next) => {
+  const forgetPassword = await userService.forgetPassword(req.body);
+  if (typeof forgetPassword === "string")
+    return next(new AppError(forgetPassword, 400));
+  sendResponse(res, true, returnMessage("Emailsend"), forgetPassword, 200);
+});
+
+exports.resetPassword = catchAsyncError(async (req, res, next) => {
+  const resetPassword = await userService.resetPassword(req.body);
+  if (typeof resetPassword === "string")
+    return next(new AppError(resetPassword, 400));
+  sendResponse(res, true, returnMessage("resetPassword"), resetPassword, 200);
+});
+
+exports.appleSignIn = catchAsyncError(async (req, res, next) => {
+  const appleSignIn = await userService.appleSign(req.body);
+  if (typeof appleSignIn === "string")
+    return next(new AppError(appleSignIn, 400));
+  sendResponse(res, true, returnMessage("userLogin"), appleSignIn, 200);
+});
+
+exports.resendEmail = catchAsyncError(async (req, res, next) => {
+  const resendEmail = await userService.resendEmail(req.body);
+  if (typeof resendEmail === "string")
+    return next(new AppError(appleSresendEmailignIn, 400));
+  sendResponse(res, true, returnMessage("Emailsend"), resendEmail, 200);
+});
