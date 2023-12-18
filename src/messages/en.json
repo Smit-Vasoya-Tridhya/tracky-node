@@ -1,24 +1,5 @@
-{
-  "userExists": "User already exist.",
-  "userRegisterd": "User registerd successfuly.",
-  "default": "Something went wrong.",
-  "userLogin": "User login successfuly.",
-  "incorrectEmailPassword": "Incorrect password.",
-  "IncorrectLogin": "Incorrect Email.",
-  "invalidtoken": "Token not verified.",
-  "userVerify": "User has been verified.",
-  "googelAuthTokenNotFound": "Google oAuth token not found.",
-  "emailPassNotFound": "Email and password not found.",
-  "EmailNotFound": "Email not exist. ",
-  "tokenOrPasswordMissing": "Otp or password missing.",
-  "invalidToken": "Token is invalid.",
-  "idTokenNotFound": "idToken is required.",
-  "Emailsend": "Email has been send.",
-  "resetPassword": "Your password has been change successfuly.",
-  "InvalidTokenLink": "Invalid Token.",
-  "emailNotVerified": "Email is not verified.",
-  "userIdNotExist": "User does not exist.",
-  "profileNotExist": "Profile does not exist.",
-  "ProfileExist": "Profile already exist.",
-  "userfetch": "User fetch successfully"
-}
+[{
+    "userExists":"User already exist.",
+    "userRegisterd":"User registerd successfuly.",
+    "default":"Something went wrong."
+}]
