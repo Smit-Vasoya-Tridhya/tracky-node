@@ -20,5 +20,6 @@
   "userIdNotExist": "User does not exist.",
   "profileNotExist": "Profile does not exist.",
   "ProfileExist": "Profile already exist.",
-  "userfetch": "User fetch successfully"
+  "userfetch": "User fetch successfully.",
+  "RoleUndefine": "Role is not define."
 }

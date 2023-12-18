@@ -62,3 +62,25 @@ exports.resendEmail = catchAsyncError(async (req, res, next) => {
     return next(new AppError(appleSresendEmailignIn, 400));
   sendResponse(res, true, returnMessage("Emailsend"), resendEmail, 200);
 });
+
+exports.updateProfile = catchAsyncError(async (req, res, next) => {
+  const updateProfile = await userService.updateProfile(
+    req.body,
+    req.files,
+    req.user
+  );
+
+  if (typeof updateProfile === "supdateProfiletring")
+    return next(new AppError(createProfile, 400));
+
+  sendResponse(res, true, returnMessage("userRegisterd"), updateProfile, 200);
+});
+
+exports.getProfilebyId = catchAsyncError(async (req, res, next) => {
+  const getProfilebyId = await userService.getProfilebyId(req.params);
+
+  if (typeof getProfilebyId === "string")
+    return next(new AppError(getProfilebyId, 400));
+
+  sendResponse(res, true, returnMessage("userfetch"), getProfilebyId, 200);
+});

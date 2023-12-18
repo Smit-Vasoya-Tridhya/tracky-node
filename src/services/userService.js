@@ -8,6 +8,7 @@ const sendEmail = require("../helpers/sendEmail");
 const utils = require("../utils/utils");
 const Token = require("../models/tokenSchema");
 const dotenv = require("dotenv");
+const Role = require("../models/roleSchema");
 dotenv.config();
 class User {
   tokenGenerator = async (payload) => {
@@ -246,7 +247,7 @@ class User {
   appleSign = async (payload) => {
     try {
       const { idToken } = payload;
-      consolelog(idToken, "idToken");
+      console.log(idToken, "idToken");
       // Validate that idToken is present
       if (!idToken) return returnMessage("idTokenNotFound");
       const decodedToken = jwt.verify(idToken, process.env.APPLE_CLIENT_ID, {
@@ -283,6 +284,46 @@ class User {
       return res;
     } catch (error) {
       logger.error("Error while appleSign", error);
+      return error.message;
+    }
+  };
+
+  updateProfile = async (payload, files, user) => {
+    try {
+      if (!payload.role) return returnMessage("RoleUndefine");
+
+      let profileImageFileName, trackRecordCsvFileName;
+      if (files["profile_image"]) {
+        profileImageFileName = files["profile_image"][0]?.filename;
+      }
+      if (files["track_record_csv"]) {
+        trackRecordCsvFileName = files["track_record_csv"][0]?.filename;
+      }
+
+      const updateUser = await Users.findByIdAndUpdate(
+        user._id,
+        {
+          payload,
+          profile_image: profileImageFileName,
+          track_record_csv: trackRecordCsvFileName,
+        },
+        { new: true }
+      );
+      return updateUser;
+    } catch (error) {
+      logger.error("Error while update profile", error);
+      return error.message;
+    }
+  };
+
+  getProfilebyId = async (payload) => {
+    try {
+      const _id = payload.id;
+      let profileData = await Users.findById(_id).select("-password");
+      if (!profileData) return returnMessage("profileNotExist");
+      return profileData;
+    } catch (error) {
+      logger.error("Error while fetch Profile", error);
       return error.message;
     }
   };

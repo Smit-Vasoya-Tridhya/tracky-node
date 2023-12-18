@@ -58,12 +58,11 @@ const userSchema = new mongoose.Schema(
       type: String,
     },
     roll: {
-      type: String,
-      required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Role",
     },
     average_deal_size: {
       type: String,
-      required: true,
     },
     track_record: {
       type: Boolean,
