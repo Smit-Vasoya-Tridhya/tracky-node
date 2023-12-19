@@ -19,6 +19,9 @@ const paymentHistorySchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    invoice_id: { type: String },
+    session_id: { type: String },
+    subscription_id: { type: String },
     data: { type: Object },
   },
   { timestamps: true }

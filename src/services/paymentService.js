@@ -2,6 +2,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const StripePlan = require("../models/stripePlanSchema");
 const { returnMessage } = require("../utils/utils");
 const User = require("../models/userSchema");
+const PaymentHistory = require("../models/paymentHistorySchema");
 class Payment {
   createPlan = async (payload) => {
     try {
@@ -95,10 +96,33 @@ class Payment {
         header,
         secret
       );
-      console.group(payloadString, 97);
+      if (event.type === "checkout.session.completed") {
+        const data = payload?.data?.object;
+
+        const plan = await StripePlan.findOne({
+          plan_id: data?.metadata?.plan_id,
+        }).lean();
+
+        const paymentObj = {
+          session_id: data?.id,
+          invoice_id: data?.invoice,
+          plan_id: data?.metadata?.plan_id,
+          user_id: data?.metadata?.user_id,
+          interval: plan?.interval,
+          subscription_id: data?.subscription,
+          active: true,
+        };
+
+        await PaymentHistory.create(paymentObj);
+        await User.findByIdAndUpdate(data?.metadata?.user_id, {
+          plan_purchased_type: plan?.interval,
+          plan_purchased: true,
+        });
+      }
+
       return true;
     } catch (error) {
-      console.log("error while handling webhook", error.message);
+      console.log("error while handling webhook", error);
       return false;
     }
   };
