@@ -70,7 +70,7 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
     req.user
   );
 
-  if (typeof updateProfile === "supdateProfiletring")
+  if (typeof updateProfile === "string")
     return next(new AppError(createProfile, 400));
 
   sendResponse(res, true, returnMessage("userRegisterd"), updateProfile, 200);

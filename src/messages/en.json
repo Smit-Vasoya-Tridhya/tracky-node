@@ -1,6 +1,6 @@
 {
   "userExists": "User already exist.",
-  "userRegisterd": "User registerd successfuly.",
+  "userRegisterd": "Onboarding process completed.",
   "default": "Something went wrong.",
   "userLogin": "User login successfuly.",
   "incorrectEmailPassword": "Incorrect password.",
@@ -23,5 +23,8 @@
   "userfetch": "User fetch successfully.",
   "RoleUndefine": "Role is not define.",
   "planCreated":"Plan created successfully.",
-  "planFetched":"Plan fetched successfully."
+  "planFetched":"Plan fetched successfully.",
+  "RoleList": "Role fetch successfully.",
+  "trackNotExist": "Track dose not exist",
+  "csvfetch": "CSV file sent successfully!"
 }
