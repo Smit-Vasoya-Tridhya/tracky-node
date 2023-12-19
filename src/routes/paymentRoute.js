@@ -1,10 +1,23 @@
 const { protect } = require("../middlewares/authMiddleware");
+const express = require("express");
 
-const paymentRoute = require("express").Router();
-const { createPlan, getPlans } = require("../controllers/paymentController");
+const paymentRoute = express.Router();
+const {
+  createPlan,
+  getPlans,
+  checkoutSession,
+  webhook,
+} = require("../controllers/paymentController");
 
-// paymentRoute.use(protect);
+paymentRoute.post(
+  "/webhook",
+  express.raw({ type: "application/json" }),
+  webhook
+);
+
+paymentRoute.use(protect);
 paymentRoute.post("/create", createPlan);
 paymentRoute.get("/", getPlans);
+paymentRoute.post("/checkout", checkoutSession);
 
 module.exports = paymentRoute;

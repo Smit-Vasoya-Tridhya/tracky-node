@@ -33,12 +33,7 @@ class User {
       const newUser = await Users.create(payload);
 
       let random = crypto.randomBytes(32).toString("hex");
-      try {
-        var encode = encodeURIComponent(payload.email);
-      } catch (err) {
-        console.log(err);
-        return "default";
-      }
+
       const link = `verifyemail?id=${random}`;
       const randomHash = crypto
         .createHash("sha256")
@@ -47,7 +42,7 @@ class User {
 
       const message = utils.registerUserEmailTemplate(link);
       const subject = "Verify Email";
-      const result = sendEmail(payload.email, message, subject);
+      sendEmail(payload.email, message, subject);
       await Token.create({
         token: randomHash,
         email: payload.email,
@@ -67,12 +62,6 @@ class User {
       const { email } = payload;
 
       let random = crypto.randomBytes(32).toString("hex");
-      try {
-        var encode = encodeURIComponent(email);
-      } catch (err) {
-        console.log(err);
-        return "default";
-      }
       const link = `verifyemail?id=${random}`;
       const randomHash = crypto
         .createHash("sha256")
@@ -167,7 +156,7 @@ class User {
           user_name: user.name,
           email_verified: true,
           google_sign_in: true,
-          tems_privacy_policy: true,
+          terms_privacy_policy: true,
         };
         const createUser = await Users.create(newUser);
         const userResponse = createUser.toObject({
@@ -247,41 +236,31 @@ class User {
   appleSign = async (payload) => {
     try {
       const { idToken } = payload;
-      console.log(idToken, "idToken");
       // Validate that idToken is present
       if (!idToken) return returnMessage("idTokenNotFound");
-      const decodedToken = jwt.verify(idToken, process.env.APPLE_CLIENT_ID, {
-        algorithm: "ES256",
-      });
-      console.log(decodedToken, "decodeToken");
+      const decodedToken = jwt.decode(idToken);
 
-      let existingUser = await Users.findOne({ email: decodedToken.email });
-      console.log(existingUser, "user");
+      let existingUser = await Users.findOne({
+        email: decodedToken.email,
+      }).lean();
 
       if (!existingUser) {
         const newUser = {
           email: decodedToken.email,
-          password: decodedToken.password,
-          first_name: decodedToken.given_name,
-          last_name: decodedToken.family_name,
-          user_name: decodedToken.name,
           email_verified: true,
           apple_sign_in: true,
-          tems_privacy_policy: true,
+          terms_privacy_policy: true,
         };
-        console.log(newUser, "newUser");
+
         const createUser = await Users.create(newUser);
         const userResponse = createUser.toObject({
           getters: true,
           virtuals: false,
         });
         delete userResponse.password;
-        const res = await this.tokenGenerator(userResponse);
-        return res;
+        return await this.tokenGenerator(userResponse);
       }
-      console.log(res, "res");
-      const res = await this.tokenGenerator(existingUser);
-      return res;
+      return await this.tokenGenerator(existingUser);
     } catch (error) {
       logger.error("Error while appleSign", error);
       return error.message;

@@ -20,3 +20,19 @@ exports.getPlans = catchAsyncError(async (req, res, next) => {
 
   sendResponse(res, true, returnMessage("planFetched"), plans, 200);
 });
+
+exports.checkoutSession = catchAsyncError(async (req, res, next) => {
+  const session = await paymentService.checkoutSession(req.body, req.user);
+
+  if (typeof session === "string") return next(new AppError(session, 400));
+
+  sendResponse(res, true, returnMessage("sessionCreated"), session, 200);
+});
+
+exports.webhook = catchAsyncError(async (req, res, next) => {
+  const success = await paymentService.webhookHandle(req.body);
+
+  if (!success) return sendResponse(res, true, "", {}, 400);
+
+  return sendResponse(res, true, "", {}, 200);
+});

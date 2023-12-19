@@ -4,11 +4,9 @@ const userSchema = new mongoose.Schema(
   {
     first_name: {
       type: String,
-      required: true,
     },
     last_name: {
       type: String,
-      required: true,
     },
     email: {
       type: String,
@@ -25,7 +23,7 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    tems_privacy_policy: {
+    terms_privacy_policy: {
       type: Boolean,
       default: false,
     },
@@ -70,7 +68,6 @@ const userSchema = new mongoose.Schema(
     },
     plan: {
       type: String,
-      required: true,
     },
     language: {
       type: String,
@@ -81,10 +78,21 @@ const userSchema = new mongoose.Schema(
     bound: {
       type: String,
     },
-
     is_deleted: {
       type: Boolean,
       default: false,
+    },
+    last_session: {
+      type: String,
+    },
+    plan_purchased: {
+      type: Boolean,
+      default: false,
+    },
+    plan_purchased_type: {
+      type: String,
+      enum: ["year", "month", null],
+      default: null,
     },
   },
   { timestamps: true }
