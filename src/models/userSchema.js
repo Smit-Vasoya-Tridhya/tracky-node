@@ -57,7 +57,7 @@ const userSchema = new mongoose.Schema(
     bio: {
       type: String,
     },
-    roll: {
+    role: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Role",
     },
@@ -65,9 +65,7 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       require: true,
     },
-    track_record_csv: {
-      type: String,
-    },
+
     plan: {
       type: String,
       required: true,

@@ -4,13 +4,11 @@ const logger = require("../logger");
 const { returnMessage } = require("../utils/utils");
 
 class pastClient {
-  createPastclient = async (req, res) => {
+  createPastclient = async (payload, files) => {
     try {
       let clientImageFileName;
-      if (req.files["client_image"]) {
-        clientImageFileName = req.files["client_image"][0]?.filename;
-      } else {
-        clientImageFileName = null;
+      if (files["client_image"]) {
+        clientImageFileName = files["client_image"][0]?.filename;
       }
 
       const {
@@ -19,7 +17,7 @@ class pastClient {
         closing_rate,
         user_approval,
         user_id,
-      } = req.body;
+      } = payload;
       const newClient = new pastClient({
         Revenue_made,
         company_type,

@@ -30,5 +30,5 @@ userRoute.put(
   ]),
   updateProfile
 );
-userRoute.get("/fetchProfile/:id", getProfilebyId);
+userRoute.get("/fetchProfile", getProfilebyId);
 module.exports = userRoute;

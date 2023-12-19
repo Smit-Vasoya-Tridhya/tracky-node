@@ -24,5 +24,6 @@
   "RoleUndefine": "Role is not define.",
   "RoleList": "Role fetch successfully.",
   "trackNotExist": "Track dose not exist",
-  "csvfetch": "CSV file sent successfully!"
+  "csvfetch": "CSV file sent successfully!",
+  "userNotFound": "User not found."
 }

@@ -1,4 +1,6 @@
 const Users = require("../models/userSchema");
+const Track = require("../models/trackRecordSchema");
+const csvParser = require("csv-parser");
 const logger = require("../logger");
 const { returnMessage } = require("../utils/utils");
 const bcrypt = require("bcrypt");
@@ -9,6 +11,7 @@ const utils = require("../utils/utils");
 const Token = require("../models/tokenSchema");
 const dotenv = require("dotenv");
 const Role = require("../models/roleSchema");
+const fs = require("fs");
 dotenv.config();
 class User {
   tokenGenerator = async (payload) => {
@@ -97,8 +100,11 @@ class User {
       if (!data.email || !data.password)
         return returnMessage("emailPassNotFound");
 
-      let user = await Users.findOne({ email: data.email }).select("+password");
-
+      let user = await Users.findOne({
+        email: data.email,
+        is_deleted: false,
+      }).select("+password");
+      if (!user) return returnMessage("userNotFound");
       if (!user.email_verified) return returnMessage("emailNotVerified");
 
       if (!user) return returnMessage("IncorrectLogin");
@@ -296,19 +302,68 @@ class User {
       if (files["profile_image"]) {
         profileImageFileName = files["profile_image"][0]?.filename;
       }
-      if (files["track_record_csv"]) {
-        trackRecordCsvFileName = files["track_record_csv"][0]?.filename;
-      }
+      // if (files["track_record_csv"]) {
+      //   trackRecordCsvFileName = files["track_record_csv"][0]?.filename;
+      // }
 
       const updateUser = await Users.findByIdAndUpdate(
         user._id,
         {
           payload,
           profile_image: profileImageFileName,
-          track_record_csv: trackRecordCsvFileName,
+          role: payload.role,
+          bio: payload.bio,
         },
         { new: true }
-      );
+      ).populate("role");
+
+      if (files["track_record_csv"]) {
+        trackRecordCsvFileName = files["track_record_csv"][0]?.filename;
+
+        const buffer = files["track_record_csv"][0].buffer;
+        const bufferString = buffer.toString("utf-8");
+        const _id = payload.role;
+        const role = await Role.findById(_id).lean();
+        const data = [];
+        let isFirstLine = true;
+
+        bufferString.split("\n").forEach((line) => {
+          if (isFirstLine) {
+            isFirstLine = false;
+            return;
+          }
+
+          const columns = line.split(",");
+          if (columns.some((column) => column.trim() === "")) {
+            console.log("Skipping row with empty column");
+            return;
+          }
+
+          if (role.key === "closer") {
+            data.push({
+              date: columns[0],
+              total_call: parseInt(columns[1]),
+              total_client: parseInt(columns[2]),
+              total_closed: parseInt(columns[3]),
+              total_lost: parseInt(columns[4]),
+              average_deal_size: payload.average_deal_size,
+              user_id: payload.user_id,
+            });
+          } else if (role.key === "appointment_setter") {
+            data.push({
+              date: columns[0],
+              total_chat: parseInt(columns[1]),
+              total_client: parseInt(columns[2]),
+              total_closed: parseInt(columns[3]),
+              total_lost: parseInt(columns[4]),
+              average_deal_size: payload.average_deal_size,
+              user_id: payload.user_id,
+            });
+          }
+        });
+
+        await Track.insertMany(data);
+      }
       return updateUser;
     } catch (error) {
       logger.error("Error while update profile", error);
@@ -316,14 +371,83 @@ class User {
     }
   };
 
-  getProfilebyId = async (payload) => {
+  getProfilebyId = async (user) => {
     try {
-      const _id = payload.id;
+      const _id = user.id;
       let profileData = await Users.findById(_id).select("-password");
+      let trackData = await Track.find({ user_id: _id });
+      let role = await Role.findById({ _id: profileData.role });
+      const sumData = {};
+
       if (!profileData) return returnMessage("profileNotExist");
-      return profileData;
+
+      if (role.key === "settler") {
+        sumData.total_chat = trackData.reduce(
+          (sum, entry) => sum + entry.total_chat,
+          0
+        );
+      } else if (role.key === "closer") {
+        sumData.total_calls = trackData.reduce(
+          (sum, entry) => sum + entry.total_calls,
+          0
+        );
+      }
+
+      sumData.total_client = trackData.reduce(
+        (sum, entry) => sum + entry.total_client,
+        0
+      );
+      sumData.total_closed = trackData.reduce(
+        (sum, entry) => sum + entry.total_closed,
+        0
+      );
+      sumData.total_lost = trackData.reduce(
+        (sum, entry) => sum + entry.total_lost,
+        0
+      );
+
+      const totalDealSize = trackData.reduce(
+        (sum, entry) => sum + entry.average_deal_size,
+        0
+      );
+      sumData.average_deal_size =
+        trackData.length > 0 ? totalDealSize / trackData.length : 0;
+
+      if (!profileData) return returnMessage("profileNotExist");
+      return { profileData, sumData, role };
     } catch (error) {
       logger.error("Error while fetch Profile", error);
+      return error.message;
+    }
+  };
+
+  editProfile = async (user) => {
+    try {
+      const _id = user.id;
+      let profileToUpdate = await Users.findById(_id);
+
+      if (!profileToUpdate) {
+        return returnMessage("ProfileNotFound");
+      }
+
+      profileToUpdate.profile_name =
+        req.body.profile_name || profileToUpdate.profile_name;
+      profileToUpdate.bio = req.body.bio || profileToUpdate.bio;
+      profileToUpdate.role = req.body.role || profileToUpdate.role;
+      profileToUpdate.language = req.body.language || profileToUpdate.language;
+      profileToUpdate.skills = req.body.skills || profileToUpdate.skills;
+      profileToUpdate.bound = req.body.bound || profileToUpdate.bound;
+      profileToUpdate.skills = req.body.skills || profileToUpdate.skills;
+
+      if (req.files["profile_image"]) {
+        profileToUpdate.profile_image = req.files["profile_image"][0]?.filename;
+      }
+      // await avgdeal  = await  Track.
+      await profileToUpdate.save();
+
+      return profileToUpdate;
+    } catch (error) {
+      logger.error("Error while updating profile", error);
       return error.message;
     }
   };
