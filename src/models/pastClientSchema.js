@@ -9,7 +9,7 @@ const pastClient = new mongoose.Schema(
       required: true,
     },
     //createdAt: { type: Date, required: true, default: Date.now, expires: 3600 },
-    Revenue_made: {
+    revenue_made: {
       type: String,
       required: true,
     },

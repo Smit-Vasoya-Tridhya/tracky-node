@@ -27,5 +27,6 @@
   "RoleList": "Role fetch successfully.",
   "trackNotExist": "Track dose not exist",
   "csvfetch": "CSV file sent successfully!",
-  "sessionCreated":"Checkout link genereated."
+  "sessionCreated":"Checkout link genereated.",
+  "userNotFound": "User not found."
 }

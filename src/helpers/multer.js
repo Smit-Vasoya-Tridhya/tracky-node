@@ -1,8 +1,10 @@
+// const storage = multer.memoryStorage()
+// const upload = multer({ storage: storage })
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
 
-const storage = multer.diskStorage({
+const storage = multer.memoryStorage({
   destination: (req, file, cb) => {
     let dir;
     if (file.mimetype.includes("image")) {
@@ -29,7 +31,7 @@ const storage = multer.diskStorage({
 
 // Multer config
 const upload = multer({
-  storage,
+  storage: storage,
   limits: {
     fileSize: 1024 * 1024 * 1, // 1MB
   },

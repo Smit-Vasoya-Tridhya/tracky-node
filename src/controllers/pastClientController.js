@@ -6,7 +6,7 @@ const sendResponse = require("../utils/sendResponse");
 const { returnMessage } = require("../utils/utils");
 
 exports.createClient = catchAsyncError(async (req, res, next) => {
-  const createClient = await PastClient.createPastclient(req);
+  const createClient = await PastClient.createPastclient(req.body, req.files);
   if (typeof createClient === "string")
     return next(new AppError(createClient, 400));
 

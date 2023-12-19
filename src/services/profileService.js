@@ -90,30 +90,15 @@ class Profile {
       profileToUpdate.profile_name =
         req.body.profile_name || profileToUpdate.profile_name;
       profileToUpdate.bio = req.body.bio || profileToUpdate.bio;
-      profileToUpdate.roll = req.body.roll || profileToUpdate.roll;
-      profileToUpdate.average_deal_size =
-        req.body.average_deal_size || profileToUpdate.average_deal_size;
-      profileToUpdate.track_record =
-        req.body.track_record || profileToUpdate.track_record;
-      profileToUpdate.plan = req.body.plan || profileToUpdate.plan;
+      profileToUpdate.role = req.body.role || profileToUpdate.role;
       profileToUpdate.language = req.body.language || profileToUpdate.language;
       profileToUpdate.skills = req.body.skills || profileToUpdate.skills;
       profileToUpdate.bound = req.body.bound || profileToUpdate.bound;
-      profileToUpdate.total_chat =
-        req.body.total_chat || profileToUpdate.total_chat;
-      profileToUpdate.total_client =
-        req.body.total_client || profileToUpdate.total_client;
       profileToUpdate.skills = req.body.skills || profileToUpdate.skills;
 
       if (req.files["profile_image"]) {
         profileToUpdate.profile_image = req.files["profile_image"][0]?.filename;
       }
-
-      if (req.files["track_record_csv"]) {
-        profileToUpdate.track_record_csv =
-          req.files["track_record_csv"][0]?.filename;
-      }
-
       await profileToUpdate.save();
 
       return profileToUpdate;

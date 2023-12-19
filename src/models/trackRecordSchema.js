@@ -7,6 +7,10 @@ const trackRecordSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    user_id: {
+      type: mongoose.Types.ObjectId,
+      require: true,
+    },
     total_chat: {
       type: Number,
       default: 0,
@@ -18,6 +22,9 @@ const trackRecordSchema = new mongoose.Schema(
     total_client: {
       type: Number,
       default: 0,
+    },
+    track_record_csv: {
+      type: Number,
     },
     total_closed: {
       type: Number,

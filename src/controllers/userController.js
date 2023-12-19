@@ -71,13 +71,13 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
   );
 
   if (typeof updateProfile === "string")
-    return next(new AppError(createProfile, 400));
+    return next(new AppError(updateProfile, 400));
 
   sendResponse(res, true, returnMessage("userRegisterd"), updateProfile, 200);
 });
 
 exports.getProfilebyId = catchAsyncError(async (req, res, next) => {
-  const getProfilebyId = await userService.getProfilebyId(req.params);
+  const getProfilebyId = await userService.getProfilebyId(req.user);
 
   if (typeof getProfilebyId === "string")
     return next(new AppError(getProfilebyId, 400));
