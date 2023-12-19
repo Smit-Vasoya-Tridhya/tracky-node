@@ -21,5 +21,7 @@
   "profileNotExist": "Profile does not exist.",
   "ProfileExist": "Profile already exist.",
   "userfetch": "User fetch successfully.",
-  "RoleUndefine": "Role is not define."
+  "RoleUndefine": "Role is not define.",
+  "planCreated":"Plan created successfully.",
+  "planFetched":"Plan fetched successfully."
 }

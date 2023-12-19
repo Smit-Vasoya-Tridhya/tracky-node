@@ -8,9 +8,11 @@ const errorHandler = require("./helpers/error");
 const cors = require("cors");
 const rootRoutes = require("./routes/index");
 const logger = require("./logger");
+const morgan = require("morgan");
 
 app.use(express.json());
 app.use(cors({ origin: "*" }));
+app.use(morgan("dev"));
 
 app.use(rootRoutes);
 
