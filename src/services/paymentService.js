@@ -3,7 +3,8 @@ const StripePlan = require("../models/stripePlanSchema");
 const { returnMessage } = require("../utils/utils");
 const User = require("../models/userSchema");
 const PaymentHistory = require("../models/paymentHistorySchema");
-class Payment {
+const logger = require("../logger");
+class PaymentService {
   createPlan = async (payload) => {
     try {
       const productObj = {
@@ -42,7 +43,7 @@ class Payment {
         { new: true }
       );
     } catch (error) {
-      console.log("Error while creating the plan", error);
+      logger.error("Error while creating the plan", error);
       return error.message;
     }
   };
@@ -51,7 +52,7 @@ class Payment {
     try {
       return await StripePlan.find().sort({ sort_value: 1 }).lean();
     } catch (error) {
-      console.log("error while get all of the products", error);
+      logger.error("error while get all of the products", error);
       return error.message;
     }
   };
@@ -77,7 +78,7 @@ class Payment {
       await User.findByIdAndUpdate(user._id, { last_session: session?.id });
       return { checkout_url: session?.url };
     } catch (error) {
-      console.log("error while creating the checkout link", error);
+      logger.error("error while creating the checkout link", error);
       return error.message;
     }
   };
@@ -113,6 +114,10 @@ class Payment {
           active: true,
         };
 
+        await PaymentHistory.updateMany(
+          { user_id: data?.metadata?.user_id },
+          { active: false }
+        );
         await PaymentHistory.create(paymentObj);
         await User.findByIdAndUpdate(data?.metadata?.user_id, {
           plan_purchased_type: plan?.interval,
@@ -122,10 +127,10 @@ class Payment {
 
       return true;
     } catch (error) {
-      console.log("error while handling webhook", error);
+      logger.error("error while handling webhook", error);
       return false;
     }
   };
 }
 
-module.exports = Payment;
+module.exports = PaymentService;

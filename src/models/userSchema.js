@@ -11,7 +11,6 @@ const userSchema = new mongoose.Schema(
     email: {
       type: String,
       required: true,
-      unique: true,
     },
     password: {
       type: String,
@@ -61,9 +60,11 @@ const userSchema = new mongoose.Schema(
     },
     track_record: {
       type: Boolean,
-      require: true,
     },
-
+    average_deal_size: {
+      type: String,
+      default: "n/a",
+    },
     plan: {
       type: String,
     },

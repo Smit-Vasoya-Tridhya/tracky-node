@@ -1,12 +1,11 @@
-const role = require("../models/roleSchema");
+const Role = require("../models/roleSchema");
 const logger = require("../logger");
 const { returnMessage } = require("../utils/utils");
 
-class Role {
+class RoleService {
   RoleList = async (payload) => {
     try {
-      const roles = await role.find();
-      return roles;
+      return await Role.find().lean();
     } catch (error) {
       logger.error("Error while fetching Role", error);
       return error.message;
@@ -14,4 +13,4 @@ class Role {
   };
 }
 
-module.exports = Role;
+module.exports = RoleService;

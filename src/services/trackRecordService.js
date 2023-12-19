@@ -1,12 +1,13 @@
-const role = require("../models/roleSchema");
+const Role = require("../models/roleSchema");
 const logger = require("../logger");
 const { format } = require("fast-csv");
 const createReadStream = require("fast-csv");
-class trackRecord {
+
+class TrackRecordService {
   getTrack = async (payload) => {
     try {
       const _id = payload.id;
-      let trackData = await role.findById(_id).lean();
+      let trackData = await Role.findById(_id).lean();
       if (!trackData) return returnMessage("trackNotExist");
       return trackData;
     } catch (error) {
@@ -16,4 +17,4 @@ class trackRecord {
   };
 }
 
-module.exports = trackRecord;
+module.exports = TrackRecordService;

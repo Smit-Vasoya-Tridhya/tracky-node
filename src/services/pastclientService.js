@@ -3,7 +3,7 @@ const user = require("../models/userSchema");
 const logger = require("../logger");
 const { returnMessage } = require("../utils/utils");
 
-class pastClient {
+class PastClientService {
   createPastclient = async (payload, files) => {
     try {
       let clientImageFileName;
@@ -33,4 +33,4 @@ class pastClient {
     }
   };
 }
-module.exports = pastClient;
+module.exports = PastClientService;

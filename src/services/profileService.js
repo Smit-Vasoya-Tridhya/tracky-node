@@ -1,9 +1,9 @@
 const profile = require("../models/profileSchema");
-const user = require("../models/userSchema");
+const User = require("../models/userSchema");
 const logger = require("../logger");
 const { returnMessage } = require("../utils/utils");
 
-class Profile {
+class ProfileService {
   createProfile = async (req, res) => {
     try {
       if (!req.body.user_id) return returnMessage("userIdNotExist");
@@ -49,7 +49,7 @@ class Profile {
       await newProfile.save();
 
       if (newProfile) {
-        const users = await user.findByIdAndUpdate(
+        await User.findByIdAndUpdate(
           { _id: user_id },
           { on_board: true },
           { new: true }
@@ -109,4 +109,4 @@ class Profile {
   };
 }
 
-module.exports = Profile;
+module.exports = ProfileService;

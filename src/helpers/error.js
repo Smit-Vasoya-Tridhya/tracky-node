@@ -1,4 +1,5 @@
 const ErrorHandler = require("./errorHandler");
+const logger = require("../logger");
 
 module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
@@ -28,7 +29,7 @@ module.exports = (err, req, res, next) => {
     err = new ErrorHandler(message, 401);
   }
 
-  console.log(
+  logger.error(
     ` /*****************Start*********************
         Date -> ${new Date().toDateString()},
         Time -> ${new Date().toLocaleTimeString()}
