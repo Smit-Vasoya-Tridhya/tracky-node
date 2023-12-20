@@ -109,12 +109,12 @@ class UserService {
 
       const sumData = {};
 
-      if (trackData?.role?.key === "settler") {
+      if (trackData?.role?.key === "setter") {
         sumData.total_chat = trackData.reduce(
           (sum, entry) => sum + entry.total_chat,
           0
         );
-      } else if (profileData?.role.key === "closer") {
+      } else if (profileData?.role?.key === "closer") {
         sumData.total_calls = trackData.reduce(
           (sum, entry) => sum + entry.total_calls,
           0
