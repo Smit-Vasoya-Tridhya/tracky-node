@@ -84,6 +84,9 @@ const userSchema = new mongoose.Schema(
     last_session: {
       type: String,
     },
+    subscription_id: {
+      type: String,
+    },
     plan_purchased: {
       type: Boolean,
       default: false,

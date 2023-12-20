@@ -99,6 +99,7 @@ class PaymentService {
       );
       if (event.type === "checkout.session.completed") {
         const data = payload?.data?.object;
+        const user = await User.findById(data?.metadata?.user_id).lean();
 
         const plan = await StripePlan.findOne({
           plan_id: data?.metadata?.plan_id,
@@ -113,18 +114,20 @@ class PaymentService {
           subscription_id: data?.subscription,
           active: true,
         };
-
-        await PaymentHistory.updateMany(
-          { user_id: data?.metadata?.user_id },
-          { active: false }
-        );
-        await PaymentHistory.create(paymentObj);
-        await User.findByIdAndUpdate(data?.metadata?.user_id, {
-          plan_purchased_type: plan?.interval,
-          plan_purchased: true,
-        });
+        await Promise.all([
+          stripe.subscription.cancel(user?.subscription_id),
+          PaymentHistory.updateMany(
+            { user_id: data?.metadata?.user_id },
+            { active: false }
+          ),
+          PaymentHistory.create(paymentObj),
+          User.findByIdAndUpdate(data?.metadata?.user_id, {
+            plan_purchased_type: plan?.interval,
+            plan_purchased: true,
+            on_board: true,
+          }),
+        ]);
       }
-
       return true;
     } catch (error) {
       logger.error("error while handling webhook", error);
