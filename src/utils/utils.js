@@ -53,7 +53,7 @@ exports.registerUserEmailTemplate = (link) => {
           <div class="content">
             <p>We received a request to verify your email. Click the button below to reset it:</p>
             <a class="button" href="${process.env.REACT_APP_BASE_URL}/${link}">Reset Password</a>
-            <p>If you didn't request a password reset, please ignore this email.</p>
+            <p>If you didn't request a verify your email, please ignore this email.</p>
             <p>Best regards,<br>Your Company Name</p>
           </div>
         </div>
@@ -106,7 +106,7 @@ exports.forgetPasswordUserEmailTemplate = (verifyUrl) => {
     <body>
       <div class="container">
         <div class="header">
-          <h1>Verify email</h1>
+          <h1>Reset Password</h1>
         </div>
         <div class="content">
           <p>We received a request to verify your email. Click the button below to reset it:</p>

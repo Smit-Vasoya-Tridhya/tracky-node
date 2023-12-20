@@ -86,3 +86,12 @@ exports.getProfilebyId = catchAsyncError(async (req, res, next) => {
 
   sendResponse(res, true, returnMessage("userfetch"), getProfilebyId, 200);
 });
+
+exports.editProfile = catchAsyncError(async (req, res, next) => {
+  const editProfile = await userService.editProfile(req.body, req.user);
+
+  if (typeof editProfile === "string")
+    return next(new AppError(editProfile, 400));
+
+  sendResponse(res, true, returnMessage("updateProfile"), editProfile, 200);
+});

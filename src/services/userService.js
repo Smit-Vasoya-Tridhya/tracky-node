@@ -1,4 +1,5 @@
 const User = require("../models/userSchema");
+const Role = require("../models/roleSchema");
 const Track = require("../models/trackRecordSchema");
 const csvParser = require("csv-parser");
 const logger = require("../logger");
@@ -148,29 +149,18 @@ class UserService {
     }
   };
 
-  editProfile = async (user) => {
+  editProfile = async (payload, user) => {
     try {
-      const _id = user.id;
-      let profileToUpdate = await User.findById(_id);
+      if (!user) return returnMessage("userNotFound");
+      const _id = user._id;
+
+      let profileToUpdate = await User.findByIdAndUpdate(_id, payload, {
+        new: true,
+      });
 
       if (!profileToUpdate) {
-        return returnMessage("ProfileNotFound");
+        return returnMessage("profileNotUpdated");
       }
-
-      profileToUpdate.profile_name =
-        req.body.profile_name || profileToUpdate.profile_name;
-      profileToUpdate.bio = req.body.bio || profileToUpdate.bio;
-      profileToUpdate.role = req.body.role || profileToUpdate.role;
-      profileToUpdate.language = req.body.language || profileToUpdate.language;
-      profileToUpdate.skills = req.body.skills || profileToUpdate.skills;
-      profileToUpdate.bound = req.body.bound || profileToUpdate.bound;
-      profileToUpdate.skills = req.body.skills || profileToUpdate.skills;
-
-      if (req.files["profile_image"]) {
-        profileToUpdate.profile_image = req.files["profile_image"][0]?.filename;
-      }
-      // await avgdeal  = await  Track.
-      await profileToUpdate.save();
 
       return profileToUpdate;
     } catch (error) {

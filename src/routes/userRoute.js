@@ -11,6 +11,7 @@ const {
   resendEmail,
   updateProfile,
   getProfilebyId,
+  editProfile,
 } = require("../controllers/userController");
 const { upload } = require("../helpers/multer");
 userRoute.post("/register", signUp);
@@ -31,4 +32,5 @@ userRoute.put(
   updateProfile
 );
 userRoute.get("/fetchProfile", getProfilebyId);
+userRoute.put("/editProfile", editProfile);
 module.exports = userRoute;

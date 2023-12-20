@@ -77,6 +77,9 @@ const userSchema = new mongoose.Schema(
     bound: {
       type: String,
     },
+    time_zone: {
+      type: String,
+    },
     is_deleted: {
       type: Boolean,
       default: false,
