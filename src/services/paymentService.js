@@ -114,8 +114,10 @@ class PaymentService {
           subscription_id: data?.subscription,
           active: true,
         };
+
+        if (user?.subscription_id)
+          await stripe.subscriptions.cancel(user?.subscription_id);
         await Promise.all([
-          stripe.subscription.cancel(user?.subscription_id),
           PaymentHistory.updateMany(
             { user_id: data?.metadata?.user_id },
             { active: false }
