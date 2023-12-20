@@ -86,3 +86,23 @@ exports.getProfilebyId = catchAsyncError(async (req, res, next) => {
 
   sendResponse(res, true, returnMessage("userfetch"), getProfilebyId, 200);
 });
+
+exports.generateQr = catchAsyncError(async (req, res, next) => {
+  const generateQr = await authService.generateQr(req.user);
+  if (typeof generateQr === "string")
+    return next(new AppError(generateQr, 400));
+  sendResponse(res, true, returnMessage("qrCodeGenerated"), generateQr, 200);
+});
+
+exports.verify_2FA_otp = catchAsyncError(async (req, res, next) => {
+  const verify_2FA_otp = await authService.verify_2FA_otp(req.body, req.user);
+  if (typeof verify_2FA_otp === "string")
+    return next(new AppError(verify_2FA_otp, 400));
+  sendResponse(
+    res,
+    true,
+    returnMessage("qrCodeGenerated"),
+    verify_2FA_otp,
+    200
+  );
+});

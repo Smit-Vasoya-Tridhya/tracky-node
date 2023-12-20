@@ -7,6 +7,9 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const sendEmail = require("../helpers/sendEmail");
 const utils = require("../utils/utils");
+const speakeasy = require("speakeasy");
+const qrcode = require("qrcode");
+const ObjectId = require("mongoose").Types.ObjectId;
 
 class AuthService {
   tokenGenerator = (payload) => {
@@ -257,6 +260,83 @@ class AuthService {
       return this.tokenGenerator(existingUser);
     } catch (error) {
       logger.error("Error while appleSign", error);
+      return error.message;
+    }
+  };
+
+  // This functions are used for the Google 2FA authenticatiors
+  generateQr = async (user) => {
+    try {
+      const secret = speakeasy.generateSecret();
+      const qr_image_url = await qrcode.toDataURL(secret.otpauth_url);
+      await User.findByIdAndUpdate(user._id, {
+        authenticator_secret: secret,
+      });
+      return { image_url: qr_image_url };
+    } catch (error) {
+      logger.error("Error while generating QR", error);
+      return error.message;
+    }
+  };
+
+  verify_2FA_otp = async (payload, user) => {
+    try {
+      const existingUser = await User.findById(user._id).lean();
+      if (!existingUser?.authenticator_secret)
+        return returnMessage("invalidAuthenticateCode");
+      const { base32 } = existingUser?.authenticator_secret;
+      const verified = speakeasy.totp.verify({
+        secret: base32.toString(),
+        encoding: "base32",
+        token: payload?.token,
+      });
+      if (!verified) return returnMessage("invalidAuthenticateCode");
+
+      const reset_email_password = await this.reset_email_password(
+        {
+          email: payload.email,
+          old_password: payload.old_password,
+          new_password: payload.new_password,
+        },
+        user
+      );
+      if (typeof reset_email_password === "string") return reset_email_password;
+      return true;
+    } catch (error) {
+      logger.error("error while verifying 2 factor authenticator", error);
+      return error.message;
+    }
+  };
+
+  // this function is used for the change the email and password with the google authenticator
+  reset_email_password = async (payload, user) => {
+    try {
+      const { email, old_password, new_password } = payload;
+      const email_exist = await User.findOne({
+        email,
+        _id: { $ne: new ObjectId(user._id) },
+      }).lean();
+      if (email_exist) return returnMessage("emailExist");
+
+      const existing_user = await User.findById(user._id).lean();
+      const valid_old_password = bcrypt.compare(
+        old_password,
+        existing_user?.password
+      );
+      if (!valid_old_password) return returnMessage("invalidOldPassword");
+
+      await User.findByIdAndUpdate(
+        user._id,
+        {
+          email,
+          password: await bcrypt.hash(new_password, 12),
+          authenticator_secret: {},
+        },
+        { new: true }
+      );
+      return true;
+    } catch (error) {
+      logger.error("error while updating the email and password", error);
       return error.message;
     }
   };

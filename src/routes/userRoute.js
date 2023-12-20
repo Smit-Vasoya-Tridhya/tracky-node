@@ -11,6 +11,8 @@ const {
   resendEmail,
   updateProfile,
   getProfilebyId,
+  generateQr,
+  verify_2FA_otp,
 } = require("../controllers/userController");
 const { upload } = require("../helpers/multer");
 userRoute.post("/register", signUp);
@@ -31,4 +33,8 @@ userRoute.put(
   updateProfile
 );
 userRoute.get("/fetchProfile", getProfilebyId);
+
+// this routes are used for the google authenticator and change password and email
+userRoute.get("/qrGenerate", generateQr);
+userRoute.post("/verify-2FA", verify_2FA_otp);
 module.exports = userRoute;
