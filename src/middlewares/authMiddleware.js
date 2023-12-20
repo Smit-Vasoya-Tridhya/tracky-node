@@ -12,7 +12,9 @@ exports.protect = catchAsyncErrors(async (req, res, next) => {
       Authorization,
       process.env.JWT_SECRET_KEY
     );
-    const user = await User.findById(decodedUserData.id).select("-password");
+    const user = await User.findById(decodedUserData.id)
+      .select("-password")
+      .lean();
     if (!user) return next(new ErrorHandler("User Not Found!", 404));
     req.user = user;
     next();
