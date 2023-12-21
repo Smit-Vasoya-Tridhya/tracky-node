@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const pastClient = new mongoose.Schema(
   {
-    company_Name: { type: String, required: true },
+    company_name: { type: String, required: true },
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -10,7 +10,7 @@ const pastClient = new mongoose.Schema(
     },
     //createdAt: { type: Date, required: true, default: Date.now, expires: 3600 },
     revenue_made: {
-      type: String,
+      type: Number,
       required: true,
     },
     company_type: {
@@ -28,10 +28,14 @@ const pastClient = new mongoose.Schema(
       type: Boolean,
       required: true,
     },
+    is_deleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
 
-const pastclient = mongoose.model("Token", pastClient);
+const pastclient = mongoose.model("PastClient", pastClient);
 
 module.exports = pastclient;

@@ -7,7 +7,6 @@ const { returnMessage } = require("../utils/utils");
 const PaymentService = require("./paymentService");
 const paymentService = new PaymentService();
 
-const fs = require("fs");
 class UserService {
   updateProfile = async (payload, files, user) => {
     try {
@@ -15,7 +14,7 @@ class UserService {
 
       let profileImageFileName, trackRecordCsvFileName;
       if (files["profile_image"]) {
-        profileImageFileName = files["profile_image"][0]?.filename;
+        profileImageFileName = files["profile_image"][0]?.path;
       }
       // if (files["track_record_csv"]) {
       //   trackRecordCsvFileName = files["track_record_csv"][0]?.filename;
@@ -109,7 +108,7 @@ class UserService {
 
       const sumData = {};
 
-      if (trackData?.role?.key === "setter") {
+      if (profileData?.role?.key === "setter") {
         sumData.total_chat = trackData.reduce(
           (sum, entry) => sum + entry.total_chat,
           0

@@ -30,5 +30,11 @@
   "sessionCreated": "Checkout link genereated.",
   "userNotFound": "User not found.",
   "updateProfile": "Profile updated successfully.",
-  "profileNotUpdated": "Profile not updated. "
+  "profileNotUpdated": "Profile not updated.",
+  "clientadded": "Client created successfully.",
+  "getClient": "Client fetch successfully.",
+  "deleteClient": "Client deleted successfully.",
+  "Errorgetclient": "Error while fetch Client.",
+  "ClientDeleted": "Client has been deleted.",
+  "ClientNotFound": "Client not found."
 }

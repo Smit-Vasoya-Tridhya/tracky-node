@@ -6,11 +6,14 @@ const path = require("path");
 
 const storage = multer.memoryStorage({
   destination: (req, file, cb) => {
+    if (file.mimetype.includes("csv")) {
+      // Use memoryStorage for CSV files
+      return cb(null, null);
+    }
+
     let dir;
     if (file.mimetype.includes("image")) {
       dir = "public/images";
-    } else if (file.mimetype.includes("csv")) {
-      dir = "public/csv";
     } else {
       // Handle other file types or throw an error
       return cb(new Error("Unsupported file type"));

@@ -32,5 +32,5 @@ userRoute.put(
   updateProfile
 );
 userRoute.get("/fetchProfile", getProfilebyId);
-userRoute.put("/editProfile", editProfile);
+userRoute.put("/editProfile", upload.single("profile_image"), editProfile);
 module.exports = userRoute;
