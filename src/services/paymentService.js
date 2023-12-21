@@ -133,7 +133,7 @@ class PaymentService {
         eventEmitter(
           "PAYMENT_SUCCESS",
           { data: "Payment done successFully" },
-          { userId: data?.metadata?.user_id }
+          data?.metadata?.user_id
         );
       }
       return true;

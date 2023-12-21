@@ -20,6 +20,7 @@ exports.socket_connection = (http_server) => {
 
 exports.eventEmitter = (event_name, payload, userId) => {
   try {
+    console.log("Inside", event_name, payload, userId);
     io.to(userId).emit(event_name, payload);
   } catch (error) {
     logger.info("Error while emitting socket error", error);
