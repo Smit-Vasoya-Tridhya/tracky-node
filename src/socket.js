@@ -8,8 +8,10 @@ exports.socket_connection = (http_server) => {
       origin: [
         "http://172.16.1.49:3000",
         "http://172.16.1.49",
-        "localhost:3000",
-        "localhost",
+        "http://137.184.19.129",
+        "http://137.184.19.129:4014",
+        "http://localhost:3000",
+        "http://localhost",
         "http://192.168.97.212:3000",
       ],
     },
