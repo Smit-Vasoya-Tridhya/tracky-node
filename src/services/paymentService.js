@@ -98,6 +98,7 @@ class PaymentService {
         header,
         secret
       );
+      logger.info("Events Type", event.type);
       if (event.type === "checkout.session.completed") {
         const data = payload?.data?.object;
         const user = await User.findById(data?.metadata?.user_id).lean();

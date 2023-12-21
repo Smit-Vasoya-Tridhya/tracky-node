@@ -9,6 +9,7 @@ const sendEmail = require("../helpers/sendEmail");
 const utils = require("../utils/utils");
 const speakeasy = require("speakeasy");
 const qrcode = require("qrcode");
+const { eventEmitter } = require("../socket");
 const ObjectId = require("mongoose").Types.ObjectId;
 
 class AuthService {
@@ -26,7 +27,10 @@ class AuthService {
 
   signUp = async (payload) => {
     try {
-      const user = await User.findOne({ email: payload.email }).lean();
+      const user = await User.findOne({
+        email: payload.email,
+        is_deleted: false,
+      }).lean();
       if (user) return returnMessage("userExists");
 
       payload.password = await bcrypt.hash(payload.password, 12);
@@ -71,7 +75,7 @@ class AuthService {
 
       const message = utils.registerUserEmailTemplate(link);
       const subject = "Verify Email";
-      const result = sendEmail(email, message, subject);
+      sendEmail(email, message, subject);
       await Token.create({
         token: randomHash,
         email: payload.email,
@@ -94,7 +98,7 @@ class AuthService {
       if (!user) return returnMessage("userNotFound");
       if (!user.email_verified) return returnMessage("emailNotVerified");
 
-      if (!user) return returnMessage("IncorrectLogin");
+      if (!user) return returnMessage("incorrectLogin");
 
       const comparePassword = await bcrypt.compare(
         data.password,
@@ -115,8 +119,8 @@ class AuthService {
         .createHash("sha256")
         .update(payload.id)
         .digest("hex");
-      let tokens = await Token.findOne({ token: randomHash });
-      if (!tokens) return returnMessage("InvalidTokenLink");
+      let tokens = await Token.findOne({ token: randomHash }).lean();
+      if (!tokens) return returnMessage("invalidTokenLink");
 
       const reqToken = crypto
         .createHash("sha256")
@@ -125,11 +129,17 @@ class AuthService {
 
       if (reqToken === tokens.token) {
         const updateUser = await User.findOneAndUpdate(
-          { email: tokens.email },
+          { email: tokens.email, is_deleted: false },
           { $set: { email_verified: true } },
           { new: true }
         );
         const { password, ...userDataWithoutPassword } = updateUser.toObject();
+        eventEmitter(
+          "EMAIL_VERIFIED",
+          { data: "Email verified successfully" },
+          updateUser.id
+        );
+        await Token.findByIdAndDelete(tokens._id);
         return this.tokenGenerator(userDataWithoutPassword);
       } else {
         returnMessage("invalidtoken");
@@ -146,7 +156,10 @@ class AuthService {
       if (!signupId) return returnMessage("googelAuthTokenNotFound");
       const user = jwt.decode(signupId);
 
-      let existingUser = await User.findOne({ email: user.email });
+      let existingUser = await User.findOne({
+        email: user.email,
+        is_deleted: false,
+      });
 
       if (!existingUser) {
         const newUser = {
@@ -179,8 +192,11 @@ class AuthService {
     try {
       const { email } = payload;
 
-      const existingUser = await User.findOne({ email: email });
-      if (!existingUser) return returnMessage("EmailNotFound");
+      const existingUser = await User.findOne({
+        email: email,
+        is_deleted: false,
+      });
+      if (!existingUser) return returnMessage("emailNotFound");
       const resetToken = crypto.randomBytes(32).toString("hex");
 
       let verifyUrl = `forget-password?token=${resetToken}`;
@@ -191,7 +207,7 @@ class AuthService {
       await existingUser.save();
       const message = utils.forgetPasswordUserEmailTemplate(verifyUrl);
       const subject = "Forgot Password Email";
-      const result = sendEmail(email, message, subject);
+      sendEmail(email, message, subject);
       return true;
     } catch (error) {
       logger.error("Error while forgetPassword", error);
@@ -211,7 +227,7 @@ class AuthService {
         .digest("hex");
 
       const user = await User.findOneAndUpdate(
-        { reset_password_token: hashedToken },
+        { reset_password_token: hashedToken, is_deleted: false },
         {
           $set: {
             password: await bcrypt.hash(password, 12),
@@ -239,6 +255,7 @@ class AuthService {
 
       let existingUser = await User.findOne({
         email: decodedToken.email,
+        is_deleted: false,
       }).lean();
 
       if (!existingUser) {
@@ -281,7 +298,10 @@ class AuthService {
 
   verify_2FA_otp = async (payload, user) => {
     try {
-      const existingUser = await User.findById(user._id).lean();
+      const existingUser = await User.findById(user._id)
+        .where("is_deleted")
+        .equals(false)
+        .lean();
       if (!existingUser?.authenticator_secret)
         return returnMessage("invalidAuthenticateCode");
       const { base32 } = existingUser?.authenticator_secret;

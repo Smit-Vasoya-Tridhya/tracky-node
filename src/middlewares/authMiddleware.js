@@ -13,6 +13,8 @@ exports.protect = catchAsyncErrors(async (req, res, next) => {
       process.env.JWT_SECRET_KEY
     );
     const user = await User.findById(decodedUserData.id)
+      .where("is_deleted")
+      .equals(false)
       .select("-password")
       .lean();
     if (!user) return next(new ErrorHandler("User Not Found!", 404));

@@ -3,7 +3,17 @@ const { Server } = require("socket.io");
 const logger = require("./logger");
 
 exports.socket_connection = (http_server) => {
-  io = new Server(http_server);
+  io = new Server(http_server, {
+    cors: {
+      origin: [
+        "http://172.16.1.49:3000",
+        "http://172.16.1.49",
+        "localhost:3000",
+        "localhost",
+        "http://192.168.97.212:3000",
+      ],
+    },
+  });
 
   io.on("connection", (socket) => {
     logger.info(`Socket connected ${socket.id}`);
@@ -12,7 +22,7 @@ exports.socket_connection = (http_server) => {
     });
 
     socket.on("ROOM", (obj) => {
-      logger.info(obj, 15);
+      logger.info(obj.id, 15);
       socket.join(obj.id);
     });
   });

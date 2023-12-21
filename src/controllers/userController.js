@@ -41,7 +41,7 @@ exports.forgetPassword = catchAsyncError(async (req, res, next) => {
   const forgetPassword = await authService.forgetPassword(req.body);
   if (typeof forgetPassword === "string")
     return next(new AppError(forgetPassword, 400));
-  sendResponse(res, true, returnMessage("Emailsend"), forgetPassword, 200);
+  sendResponse(res, true, returnMessage("emailSend"), forgetPassword, 200);
 });
 
 exports.resetPassword = catchAsyncError(async (req, res, next) => {
@@ -62,7 +62,7 @@ exports.resendEmail = catchAsyncError(async (req, res, next) => {
   const resendEmail = await authService.resendEmail(req.body);
   if (typeof resendEmail === "string")
     return next(new AppError(appleSresendEmailignIn, 400));
-  sendResponse(res, true, returnMessage("Emailsend"), resendEmail, 200);
+  sendResponse(res, true, returnMessage("emailSend"), resendEmail, 200);
 });
 
 exports.updateProfile = catchAsyncError(async (req, res, next) => {
@@ -78,13 +78,22 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
   sendResponse(res, true, returnMessage("userRegisterd"), updateProfile, 200);
 });
 
+exports.deleteProfile = catchAsyncError(async (req, res, next) => {
+  const deletedProfile = await userService.deleteProfile(req.user);
+
+  if (typeof deletedProfile === "string")
+    return next(new AppError(deletedProfile, 400));
+
+  sendResponse(res, true, returnMessage("userDeleted"), {}, 200);
+});
+
 exports.getProfilebyId = catchAsyncError(async (req, res, next) => {
   const getProfilebyId = await userService.getProfilebyId(req.user);
 
   if (typeof getProfilebyId === "string")
     return next(new AppError(getProfilebyId, 400));
 
-  sendResponse(res, true, returnMessage("userfetch"), getProfilebyId, 200);
+  sendResponse(res, true, returnMessage("userFetch"), getProfilebyId, 200);
 });
 
 exports.generateQr = catchAsyncError(async (req, res, next) => {
@@ -101,7 +110,7 @@ exports.verify_2FA_otp = catchAsyncError(async (req, res, next) => {
   sendResponse(
     res,
     true,
-    returnMessage("qrCodeGenerated"),
+    returnMessage("2FactorVerified"),
     verify_2FA_otp,
     200
   );
