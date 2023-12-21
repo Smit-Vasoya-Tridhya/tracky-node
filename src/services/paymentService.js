@@ -4,6 +4,7 @@ const { returnMessage } = require("../utils/utils");
 const User = require("../models/userSchema");
 const PaymentHistory = require("../models/paymentHistorySchema");
 const logger = require("../logger");
+const { eventEmitter } = require("../socket");
 class PaymentService {
   createPlan = async (payload) => {
     try {
@@ -129,6 +130,11 @@ class PaymentService {
             on_board: true,
           }),
         ]);
+        eventEmitter(
+          "PAYMENT_SUCCESS",
+          { data: "Payment done successFully" },
+          { userId: data?.metadata?.user_id }
+        );
       }
       return true;
     } catch (error) {

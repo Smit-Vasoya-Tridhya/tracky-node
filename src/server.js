@@ -10,6 +10,10 @@ const rootRoutes = require("./routes/index");
 const logger = require("./logger");
 const morgan = require("morgan");
 const swagger = require("swagger-ui-express");
+const http = require("http");
+const { socket_connection } = require("./socket");
+const server = http.createServer(app);
+socket_connection(server);
 
 app.use(express.json());
 app.use(cors({ origin: "*" }));
@@ -24,4 +28,4 @@ const swaggerDoc = require("./swagger/swagger.index");
 
 app.use("/swagger-doc", swagger.serve);
 app.use("/swagger-doc", swagger.setup(swaggerDoc));
-app.listen(port, () => logger.info(`Server started at port:${port}`));
+server.listen(port, () => logger.info(`Server started at port:${port}`));

@@ -286,7 +286,7 @@ class AuthService {
         return returnMessage("invalidAuthenticateCode");
       const { base32 } = existingUser?.authenticator_secret;
       const verified = speakeasy.totp.verify({
-        secret: base32.toString(),
+        secret: base32,
         encoding: "base32",
         token: payload?.token,
       });
