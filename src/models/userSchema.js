@@ -99,6 +99,9 @@ const userSchema = new mongoose.Schema(
       enum: ["year", "month", null],
       default: null,
     },
+    authenticator_secret: {
+      type: Object,
+    },
   },
   { timestamps: true }
 );

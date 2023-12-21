@@ -20,5 +20,5 @@ exports.getProfilebyId = catchAsyncError(async (req, res, next) => {
   if (typeof getProfilebyId === "string")
     return next(new AppError(getProfilebyId, 400));
 
-  sendResponse(res, true, returnMessage("userfetch"), getProfilebyId, 200);
+  sendResponse(res, true, returnMessage("userFetch"), getProfilebyId, 200);
 });

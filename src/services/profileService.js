@@ -9,7 +9,7 @@ class ProfileService {
       if (!req.body.user_id) return returnMessage("userIdNotExist");
 
       let profileExist = await profile.findOne({ user_id: req.body.user_id });
-      if (profileExist) return returnMessage("ProfileExist");
+      if (profileExist) return returnMessage("profileExist");
 
       let profileImageFileName, trackRecordCsvFileName;
       if (req.files["profile_image"]) {

@@ -30,7 +30,8 @@ module.exports = (err, req, res, next) => {
   }
 
   logger.error(
-    ` /*****************Start*********************
+    ` 
+    /*****************Start*********************
         Date -> ${new Date().toDateString()},
         Time -> ${new Date().toLocaleTimeString()}
     

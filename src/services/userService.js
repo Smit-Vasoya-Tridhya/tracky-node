@@ -1,16 +1,17 @@
 const User = require("../models/userSchema");
 const Role = require("../models/roleSchema");
 const Track = require("../models/trackRecordSchema");
-const csvParser = require("csv-parser");
 const logger = require("../logger");
 const { returnMessage } = require("../utils/utils");
 const PaymentService = require("./paymentService");
 const paymentService = new PaymentService();
+const PaymentHistory = require("../models/paymentHistorySchema");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 class UserService {
   updateProfile = async (payload, files, user) => {
     try {
-      if (!payload.role) return returnMessage("RoleUndefined");
+      if (!payload.role) return returnMessage("roleUndefined");
 
       let profileImageFileName, trackRecordCsvFileName;
       if (files["profile_image"]) {
@@ -164,6 +165,39 @@ class UserService {
       return profileToUpdate;
     } catch (error) {
       logger.error("Error while updating profile", error);
+      return error.message;
+    }
+  };
+
+  deleteProfile = async (user) => {
+    try {
+      const user_exist = await User.findById(user._id).lean();
+      if (!user_exist) return returnMessage("userIdNotExist");
+
+      const promise_array = [
+        User.findByIdAndUpdate(user_exist._id, {
+          email_verified: false,
+          on_board: false,
+          is_deleted: true,
+          plan_purchased: false,
+          plan_purchased_type: null,
+          authenticator_secret: {},
+        }),
+        PaymentHistory.updateMany(
+          { user_id: user_exist._id },
+          { active: false }
+        ),
+      ];
+
+      if (user_exist?.subscription_id)
+        promise_array.push(
+          stripe.subscriptions.cancel(user_id?.subscription_id)
+        );
+
+      await Promise.all(promise_array);
+      return true;
+    } catch (error) {
+      logger.error("Error while deleting the user", error);
       return error.message;
     }
   };
