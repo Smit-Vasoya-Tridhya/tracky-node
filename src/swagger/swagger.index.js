@@ -21,25 +21,36 @@ const swaggerDoc = {
       description: "Staging server",
     },
   ],
+  security: [
+    {
+      bearerAuth: [],
+    },
+  ],
+  components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: "apiKey",
+        name: "token",
+        in: "header",
+        description:
+          "An authorization header. Please add Bearer keyword before the token.",
+      },
+    },
+  },
   tags: [
     {
       name: "Users",
       description: "Users All API Route",
     },
-  ],
-  tags: [
     {
       name: "Roles",
       description: "Roles All API Route",
     },
-  ],
-  tags: [
     {
       name: "Past Client",
       description: "Past Client All API Route",
     },
   ],
-
   paths: {
     ...usersRoutes,
     ...roleRoutes,

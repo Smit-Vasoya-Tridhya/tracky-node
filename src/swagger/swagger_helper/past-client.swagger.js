@@ -58,15 +58,15 @@ const PastClientList = {
   description: "Past Client list",
   summary: "Past Client list",
   parameters: [
-    {
-      name: "token",
-      description:
-        "an authorization header, Please add Bearer keyword before token",
-      in: "header",
-      type: "string",
-      required: true,
-      example: "Bearer",
-    },
+    // {
+    //   name: "token",
+    //   description:
+    //     "an authorization header, Please add Bearer keyword before token",
+    //   in: "header",
+    //   type: "string",
+    //   required: true,
+    //   example: "Bearer",
+    // },
     // {
     //   name: "id",
     //   in: "params",
@@ -220,15 +220,15 @@ const deletePastClient = {
   description: "Delete Past Client ",
   summary: "Delete Past Client ",
   parameters: [
-    {
-      name: "token",
-      description:
-        "an authorization header, Please add Bearer keyword before token",
-      in: "header",
-      type: "string",
-      required: true,
-      example: "Bearer",
-    },
+    // {
+    //   name: "token",
+    //   description:
+    //     "an authorization header, Please add Bearer keyword before token",
+    //   in: "header",
+    //   type: "string",
+    //   required: true,
+    //   example: "Bearer",
+    // },
     {
       name: "id",
       in: "path",
