@@ -83,7 +83,12 @@ class PastClientService {
         .limit(pagination.resultPerPage)
         .lean();
 
-      return clientList;
+      const clientData = await pastClient.find(queryObj);
+
+      return {
+        clientList,
+        pageCount: Math.ceil(clientData.length / pagination.resultPerPage) || 0,
+      };
     } catch (error) {
       logger.error("Error while fetch list ", error);
       return error.message;

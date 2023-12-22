@@ -40,7 +40,6 @@ const userSchema = new mongoose.Schema(
     },
     user_name: {
       type: String,
-      unique: true,
     },
     reset_password_token: {
       type: String,
