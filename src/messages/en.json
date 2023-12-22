@@ -47,5 +47,6 @@
   "emailExist": "Email already exists.",
   "invalidOldPassword": "Old password is wrong.",
   "userDeleted": "User deleted successfully.",
-  "2FactorVerified": "Two-factor authentication verified."
+  "2FactorVerified": "Two-factor authentication verified.",
+  "editClient": "Client edited successfully."
 }

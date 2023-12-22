@@ -1,6 +1,7 @@
 const pastClient = require("../models/pastClientSchema");
 const user = require("../models/userSchema");
 const logger = require("../logger");
+const mongoose = require("mongoose");
 const {
   returnMessage,
   paginationObject,
@@ -83,7 +84,12 @@ class PastClientService {
         .limit(pagination.resultPerPage)
         .lean();
 
-      return clientList;
+      const clientData = await pastClient.find(queryObj);
+
+      return {
+        clientList,
+        pageCount: Math.ceil(clientData.length / pagination.resultPerPage) || 0,
+      };
     } catch (error) {
       logger.error("Error while fetch list ", error);
       return error.message;
@@ -120,7 +126,38 @@ class PastClientService {
 
       return deleteClient;
     } catch (error) {
-      logger.error("Error while fetching cient", error);
+      logger.error("Error while fetching client", error);
+      return error.message;
+    }
+  };
+
+  editClient = async (id, payload, files) => {
+    try {
+      const _id = id.id;
+      if (!_id) return returnMessage("ClientNotFound");
+
+      let clientImageFileName;
+      if (files.fieldname === "client_image") {
+        clientImageFileName = files?.path;
+      }
+      const updateObject = {
+        ...payload, // Assuming payload is an object with client data
+      };
+
+      if (clientImageFileName) {
+        updateObject.client_image = clientImageFileName;
+      }
+
+      // Use findByIdAndUpdate to update the client
+      const editedClient = await pastClient.findByIdAndUpdate(
+        _id,
+        updateObject,
+        { new: true }
+      );
+
+      return editedClient;
+    } catch (error) {
+      logger.error("Error while edit client", error);
       return error.message;
     }
   };

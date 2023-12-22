@@ -1,4 +1,6 @@
 const usersRoutes = require("./swagger_helper/user.swagger");
+const roleRoutes = require("./swagger_helper/role.swagger");
+const pastClientRoutes = require("./swagger_helper/past-client.swagger");
 
 const swaggerDoc = {
   openapi: "3.0.0",
@@ -20,9 +22,23 @@ const swaggerDoc = {
       description: "Users All API Route",
     },
   ],
+  tags: [
+    {
+      name: "Roles",
+      description: "Roles All API Route",
+    },
+  ],
+  tags: [
+    {
+      name: "Past Client",
+      description: "Past Client All API Route",
+    },
+  ],
 
   paths: {
     ...usersRoutes,
+    ...roleRoutes,
+    ...pastClientRoutes,
   },
 };
 
