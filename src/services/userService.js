@@ -12,14 +12,12 @@ class UserService {
   updateProfile = async (payload, files, user) => {
     try {
       if (!payload.role) return returnMessage("roleUndefined");
+      if (!payload.track_record) return returnMessage("trackRecordNotDefine");
 
       let profileImageFileName, trackRecordCsvFileName;
       if (files["profile_image"]) {
         profileImageFileName = files["profile_image"][0]?.path;
       }
-      // if (files["track_record_csv"]) {
-      //   trackRecordCsvFileName = files["track_record_csv"][0]?.filename;
-      // }
 
       await User.findByIdAndUpdate(
         user._id,

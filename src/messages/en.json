@@ -48,5 +48,6 @@
   "invalidOldPassword": "Old password is wrong.",
   "userDeleted": "User deleted successfully.",
   "2FactorVerified": "Two-factor authentication verified.",
-  "editClient": "Client edited successfully."
+  "editClient": "Client edited successfully.",
+  "trackRecordNotDefine": "Track record is not selected"
 }
