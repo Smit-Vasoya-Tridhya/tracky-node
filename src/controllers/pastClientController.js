@@ -38,3 +38,15 @@ exports.deleteClientByID = catchAsyncError(async (req, res, next) => {
 
   sendResponse(res, true, returnMessage("deleteClient"), deleteClient, 200);
 });
+
+exports.editClient = catchAsyncError(async (req, res, next) => {
+  const editClient = await pastClient.editClient(
+    req.params,
+    req.body,
+    req.file
+  );
+  if (typeof editClient === "string")
+    return next(new AppError(editClient, 400));
+
+  sendResponse(res, true, returnMessage("editClient"), editClient, 200);
+});
