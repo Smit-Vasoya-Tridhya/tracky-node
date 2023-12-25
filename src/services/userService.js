@@ -7,6 +7,7 @@ const PaymentService = require("./paymentService");
 const paymentService = new PaymentService();
 const PaymentHistory = require("../models/paymentHistorySchema");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const fs = require("fs");
 
 class UserService {
   updateProfile = async (payload, files, user) => {
@@ -16,7 +17,7 @@ class UserService {
 
       let profileImageFileName, trackRecordCsvFileName;
       if (files["profile_image"]) {
-        profileImageFileName = files["profile_image"][0]?.path;
+        profileImageFileName = files["profile_image"][0]?.filename;
       }
 
       await User.findByIdAndUpdate(
@@ -30,13 +31,16 @@ class UserService {
         { new: true }
       );
 
-      if (files["track_record_csv"]) {
+      if (
+        files["track_record_csv"] &&
+        fs.existsSync(files["track_record_csv"][0]?.path)
+      ) {
         trackRecordCsvFileName = files["track_record_csv"][0]?.filename;
-
-        const buffer = files["track_record_csv"][0].buffer;
-        const bufferString = buffer.toString("utf-8");
-        const _id = payload.role;
-        const role = await Role.findById(_id).lean();
+        const bufferString = fs.readFileSync(
+          files["track_record_csv"][0]?.path,
+          "utf-8"
+        );
+        const role = await Role.findById(payload?.role).lean();
         const data = [];
         let isFirstLine = true;
 
@@ -75,6 +79,8 @@ class UserService {
           }
         });
 
+        fs.unlinkSync(files["track_record_csv"][0]?.path);
+        await Track.deleteMany({ user_id: user._id });
         await Track.insertMany(data);
       }
 

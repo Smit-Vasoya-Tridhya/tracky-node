@@ -1,32 +1,29 @@
-// const storage = multer.memoryStorage()
-// const upload = multer({ storage: storage })
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
 
-const storage = multer.memoryStorage({
+const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    if (file.mimetype.includes("csv")) {
-      // Use memoryStorage for CSV files
-      return cb(null, null);
+    const csv_dir = "src/public/csv";
+    const img_dir = "src/public/uploads";
+    if (!fs.existsSync(csv_dir)) {
+      fs.mkdirSync(csv_dir, { recursive: true });
+    }
+    if (!fs.existsSync(img_dir)) {
+      fs.mkdirSync(img_dir, { recursive: true });
     }
 
-    let dir;
-    if (file.mimetype.includes("image")) {
-      dir = "public/images";
-    } else {
-      // Handle other file types or throw an error
-      return cb(new Error("Unsupported file type"));
+    if (file.mimetype.startsWith("text/csv")) {
+      cb(null, csv_dir);
     }
-
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
+    if (file.mimetype.startsWith("image/")) {
+      cb(null, img_dir);
     }
-
-    cb(null, dir);
   },
+
   filename: (req, file, cb) => {
-    const fileName = Date.now() + "-" + file.originalname;
+    const extension = file.originalname.split(".").pop() || undefined;
+    const fileName = Date.now() + "." + extension;
     req.fileName = fileName;
     cb(null, fileName);
   },
