@@ -48,3 +48,21 @@ exports.trackCsv = catchAsyncError(async (req, res, next) => {
     sendResponse(res, false, returnMessage("Error processing CSV"), null, 500);
   }
 });
+
+exports.updateTrack = catchAsyncError(async (req, res, next) => {
+  const updateTrack = await trackService.updateTrackRecord(req.body, req.user);
+
+  if (typeof updateTrack === "string")
+    return next(new AppError(updateTrack, 400));
+
+  sendResponse(res, true, returnMessage("updateTrack"), updateTrack, 200);
+});
+
+exports.fetchTrack = catchAsyncError(async (req, res, next) => {
+  const fetchTrack = await trackService.getTrackRecord(req.user);
+
+  if (typeof fetchTrack === "string")
+    return next(new AppError(fetchTrack, 400));
+
+  sendResponse(res, true, returnMessage("fetchTrack"), fetchTrack, 200);
+});

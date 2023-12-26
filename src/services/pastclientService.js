@@ -1,4 +1,4 @@
-const pastClient = require("../models/pastClientSchema");
+const PastClient = require("../models/pastClientSchema");
 const user = require("../models/userSchema");
 const logger = require("../logger");
 const mongoose = require("mongoose");
@@ -23,7 +23,7 @@ class PastClientService {
         closing_rate,
         user_approval,
       } = payload;
-      const newClient = new pastClient({
+      const newClient = new PastClient({
         company_name,
         revenue_made,
         company_type,
@@ -32,8 +32,7 @@ class PastClientService {
         user_id: user._id,
         client_image: clientImageFileName,
       });
-      await newClient.save();
-      return newClient;
+      return newClient.save();
     } catch (error) {
       logger.error("Error while create Profile", error);
       return error.message;
@@ -42,8 +41,6 @@ class PastClientService {
 
   clientList = async (searchObj, user) => {
     try {
-      if (!user) return returnMessage("userNotFound");
-
       const pagination = paginationObject(searchObj);
       const queryObj = { is_deleted: false };
 
@@ -77,14 +74,13 @@ class PastClientService {
         }
       }
 
-      const clientList = await pastClient
-        .find(queryObj)
+      const clientList = await PastClient.find(queryObj)
         .sort(pagination.sort)
         .skip(pagination.skip)
         .limit(pagination.resultPerPage)
         .lean();
 
-      const clientData = await pastClient.find(queryObj);
+      const clientData = await PastClient.find(queryObj);
 
       return {
         clientList,
@@ -98,10 +94,10 @@ class PastClientService {
 
   getClient = async (payload) => {
     try {
-      const _id = payload.id;
-      if (!_id) return returnMessage("ClientNotFound");
-      // const fetchClient = await pastClient.findById(_id, { is_deleted: false });
-      const fetchClient = await pastClient.findOne({ _id, is_deleted: false });
+      const fetchClient = await PastClient.findOne({
+        _id: payload.id,
+        is_deleted: false,
+      });
 
       if (!fetchClient) return returnMessage("ClientDeleted");
       return fetchClient;
@@ -113,46 +109,45 @@ class PastClientService {
 
   deleteClient = async (payload) => {
     try {
-      const _id = payload.id;
-      if (!_id) return returnMessage("ClientNotFound");
+      const clientExist = await PastClient.findById(payload.id).lean();
+      if (!clientExist) return returnMessage("ClientNotFound");
 
-      const deleteClient = await pastClient.findByIdAndUpdate(
-        _id,
+      return await PastClient.findByIdAndUpdate(
+        payload.id,
         {
           is_deleted: true,
         },
         { new: true }
       );
-
-      return deleteClient;
     } catch (error) {
       logger.error("Error while fetching client", error);
       return error.message;
     }
   };
 
-  editClient = async (id, payload, files) => {
+  editClient = async (params, payload, files) => {
     try {
-      const clientExist = await pastClient.findById(id).lean();
+      const clientExist = await PastClient.findById(params.id).lean();
       if (!clientExist) return returnMessage("ClientNotFound");
 
-      let clientImageFileName;
       if (files.fieldname === "client_image") {
-        clientImageFileName = "uploads/" + files?.filename;
+        payload.client_image = "uploads/" + files?.filename;
       }
-      const updateObject = {
-        ...payload, // Assuming payload is an object with client data
-      };
+      // const updateObject = {
+      //   ...payload, // Assuming payload is an object with client data
+      // };
 
-      if (clientImageFileName) {
-        updateObject.client_image = clientImageFileName;
-      }
+      // if (clientImageFileName) {
+      //   updateObject.client_image = clientImageFileName;
+      // }
 
       // Use findByIdAndUpdate to update the client
-      const editedClient = await pastClient.findByIdAndUpdate(
-        _id,
-        updateObject,
-        { new: true }
+      const editedClient = await PastClient.findByIdAndUpdate(
+        params.id,
+        payload,
+        {
+          new: true,
+        }
       );
 
       return editedClient;
