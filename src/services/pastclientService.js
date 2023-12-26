@@ -13,7 +13,7 @@ class PastClientService {
     try {
       let clientImageFileName;
       if (files.fieldname === "client_image") {
-        clientImageFileName = files?.filePath;
+        clientImageFileName = "uploads/" + files?.filename;
       }
 
       const {
@@ -138,7 +138,7 @@ class PastClientService {
 
       let clientImageFileName;
       if (files.fieldname === "client_image") {
-        clientImageFileName = files?.filePath;
+        clientImageFileName = "uploads/" + files?.filename;
       }
       const updateObject = {
         ...payload, // Assuming payload is an object with client data
