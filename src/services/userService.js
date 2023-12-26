@@ -17,7 +17,7 @@ class UserService {
 
       let profileImageFileName, trackRecordCsvFileName;
       if (files["profile_image"]) {
-        profileImageFileName = files["profile_image"][0]?.filename;
+        profileImageFileName = files["profile_image"][0]?.filePath;
       }
 
       await User.findByIdAndUpdate(
@@ -35,7 +35,7 @@ class UserService {
         files["track_record_csv"] &&
         fs.existsSync(files["track_record_csv"][0]?.path)
       ) {
-        trackRecordCsvFileName = files["track_record_csv"][0]?.filename;
+        trackRecordCsvFileName = files["track_record_csv"][0]?.filePath;
         const bufferString = fs.readFileSync(
           files["track_record_csv"][0]?.path,
           "utf-8"
@@ -153,12 +153,16 @@ class UserService {
     }
   };
 
-  editProfile = async (payload, user) => {
+  editProfile = async (payload, files, user) => {
     try {
-      if (!user) return returnMessage("userNotFound");
-      const _id = user._id;
+      if (files?.fieldname === "profile_image") {
+        payload.profile_image = files?.filePath;
+        if (fs.existsSync(`src/public/uploads/${user?.profile_image}`)) {
+          fs.unlinkSync(`src/public/uploads/${user?.profile_image}`);
+        }
+      }
 
-      let profileToUpdate = await User.findByIdAndUpdate(_id, payload, {
+      let profileToUpdate = await User.findByIdAndUpdate(user._id, payload, {
         new: true,
       });
 

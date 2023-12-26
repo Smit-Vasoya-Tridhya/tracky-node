@@ -117,7 +117,11 @@ exports.verify_2FA_otp = catchAsyncError(async (req, res, next) => {
 });
 
 exports.editProfile = catchAsyncError(async (req, res, next) => {
-  const editProfile = await userService.editProfile(req.body, req.user);
+  const editProfile = await userService.editProfile(
+    req.body,
+    req.file,
+    req.user
+  );
 
   if (typeof editProfile === "string")
     return next(new AppError(editProfile, 400));

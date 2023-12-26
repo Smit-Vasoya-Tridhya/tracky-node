@@ -13,7 +13,7 @@ class PastClientService {
     try {
       let clientImageFileName;
       if (files.fieldname === "client_image") {
-        clientImageFileName = files?.path;
+        clientImageFileName = files?.filePath;
       }
 
       const {
@@ -133,12 +133,12 @@ class PastClientService {
 
   editClient = async (id, payload, files) => {
     try {
-      const _id = id.id;
-      if (!_id) return returnMessage("ClientNotFound");
+      const clientExist = await pastClient.findById(id).lean();
+      if (!clientExist) return returnMessage("ClientNotFound");
 
       let clientImageFileName;
       if (files.fieldname === "client_image") {
-        clientImageFileName = files?.path;
+        clientImageFileName = files?.filePath;
       }
       const updateObject = {
         ...payload, // Assuming payload is an object with client data

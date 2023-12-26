@@ -13,12 +13,12 @@ class ProfileService {
 
       let profileImageFileName, trackRecordCsvFileName;
       if (req.files["profile_image"]) {
-        profileImageFileName = req.files["profile_image"][0]?.filename;
+        profileImageFileName = req.files["profile_image"][0]?.filePath;
       } else {
         profileImageFileName = null;
       }
       if (req.files["track_record_csv"]) {
-        trackRecordCsvFileName = req.files["track_record_csv"][0]?.filename;
+        trackRecordCsvFileName = req.files["track_record_csv"][0]?.filePath;
       } else {
         trackRecordCsvFileName = null;
       }
@@ -97,7 +97,7 @@ class ProfileService {
       profileToUpdate.skills = req.body.skills || profileToUpdate.skills;
 
       if (req.files["profile_image"]) {
-        profileToUpdate.profile_image = req.files["profile_image"][0]?.filename;
+        profileToUpdate.profile_image = req.files["profile_image"][0]?.filePath;
       }
       await profileToUpdate.save();
 

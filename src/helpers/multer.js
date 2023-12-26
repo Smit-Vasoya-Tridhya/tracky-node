@@ -25,6 +25,7 @@ const storage = multer.diskStorage({
     const extension = file.originalname.split(".").pop() || undefined;
     const fileName = Date.now() + "." + extension;
     req.fileName = fileName;
+    req.filePath = `uploads/${fileName}`;
     cb(null, fileName);
   },
 });
