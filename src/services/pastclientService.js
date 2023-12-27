@@ -130,27 +130,31 @@ class PastClientService {
       const clientExist = await PastClient.findById(params.id).lean();
       if (!clientExist) return returnMessage("ClientNotFound");
 
-      if (files.fieldname === "client_image") {
+      if (files?.fieldname === "client_image") {
         payload.client_image = "uploads/" + files?.filename;
       }
-      // const updateObject = {
-      //   ...payload, // Assuming payload is an object with client data
-      // };
-
-      // if (clientImageFileName) {
-      //   updateObject.client_image = clientImageFileName;
-      // }
-
-      // Use findByIdAndUpdate to update the client
-      const editedClient = await PastClient.findByIdAndUpdate(
+      const {
+        company_name,
+        revenue_made,
+        company_type,
+        closing_rate,
+        user_approval,
+        client_image,
+      } = payload;
+      return await PastClient.findByIdAndUpdate(
         params.id,
-        payload,
+        {
+          company_name,
+          revenue_made,
+          company_type,
+          closing_rate,
+          user_approval,
+          client_image,
+        },
         {
           new: true,
         }
       );
-
-      return editedClient;
     } catch (error) {
       logger.error("Error while edit client", error);
       return error.message;

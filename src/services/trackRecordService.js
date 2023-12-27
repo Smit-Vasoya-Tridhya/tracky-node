@@ -22,11 +22,14 @@ class TrackRecordService {
   updateTrackRecord = async (payload, user) => {
     try {
       const parsedDate = moment(payload.date);
-      const date = parsedDate.utc().format();
-      const existingData = await Track.findOne({ date: date });
+      const date = parsedDate.utc().startOf("day"); // Extract date and set time to 00:00:00
+      const formattedDate = date.format();
+      const existingData = await Track.findOne({ date: formattedDate });
 
       if (existingData) {
-        return await Track.findByIdAndUpdate(existingData._id, payload);
+        return await Track.findByIdAndUpdate(existingData._id, payload, {
+          new: true,
+        });
       } else {
         const createTrack = await Track.create({
           ...payload,
@@ -118,7 +121,19 @@ class TrackRecordService {
 
       // Now monthlyData contains the desired structure.
 
-      return { sumData, monthlyData };
+      return { sumData, monthlyData, profileData };
+    } catch (error) {
+      logger.error("Error while fetch track record", error);
+      return error.message;
+    }
+  };
+
+  getRecordByDate = async (params) => {
+    try {
+      const parsedDate = moment(params.date);
+      const date = parsedDate.utc().startOf("day");
+      const formattedDate = date.format();
+      return await Track.findOne({ date: formattedDate }).lean();
     } catch (error) {
       logger.error("Error while fetch track record", error);
       return error.message;
