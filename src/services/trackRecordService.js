@@ -27,9 +27,11 @@ class TrackRecordService {
       const existingData = await Track.findOne({ date: formattedDate });
 
       if (existingData) {
-        return await Track.findByIdAndUpdate(existingData._id, payload, {
-          new: true,
-        });
+        return await Track.findByIdAndUpdate(
+          existingData._id,
+          { ...payload, date: formattedDate },
+          { new: true }
+        );
       } else {
         const createTrack = await Track.create({
           ...payload,
