@@ -156,14 +156,6 @@ class UserService {
 
   editProfile = async (payload, files, user) => {
     try {
-      let editProfileImage;
-      if (files?.fieldname === "profile_image") {
-        editProfileImage = "uploads/" + files?.filename;
-        if (fs.existsSync(`src/public/uploads/${user?.profile_image}`)) {
-          fs.unlinkSync(`src/public/uploads/${user?.profile_image}`);
-        }
-      }
-
       const {
         first_name,
         last_name,
@@ -176,24 +168,28 @@ class UserService {
         average_deal_size,
       } = payload;
 
-      return await User.findByIdAndUpdate(
-        user._id,
-        {
-          first_name,
-          last_name,
-          bio,
-          role,
-          language,
-          skills,
-          bound,
-          time_zone,
-          average_deal_size,
-          editProfileImage,
-        },
-        {
-          new: true,
+      const update_data = {
+        first_name,
+        last_name,
+        bio,
+        role,
+        language,
+        skills,
+        bound,
+        time_zone,
+        average_deal_size,
+      };
+
+      if (files?.fieldname === "profile_image") {
+        update_data.profile_image = "uploads/" + files?.filename;
+        if (fs.existsSync(`src/public/uploads/${user?.profile_image}`)) {
+          fs.unlinkSync(`src/public/uploads/${user?.profile_image}`);
         }
-      );
+      }
+
+      return await User.findByIdAndUpdate(user._id, update_data, {
+        new: true,
+      });
     } catch (error) {
       logger.error("Error while updating profile", error);
       return error.message;
