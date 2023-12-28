@@ -27,6 +27,10 @@ exports.socket_connection = (http_server) => {
       logger.info(obj.id, 15);
       socket.join(obj.id);
     });
+
+    socket.on("CONFIRMATION", (payload) => {
+      logger.info(`Event Confirmation : ${payload}`);
+    });
   });
 };
 
