@@ -4,6 +4,34 @@ exports.returnMessage = (msg, language = "en") => {
   return engMessage[msg];
 };
 
+exports.validateEmail = (email) => {
+  // email validator from https://github.com/manishsaraan/email-validator/blob/master/index.js
+  const regex =
+    /^[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/;
+
+  if (!email) return false;
+  const email_parts = email.split("@");
+
+  if (email_parts.length !== 2) return false;
+
+  const account = email_parts[0];
+  const address = email_parts[1];
+
+  if (account.length > 64) return false;
+  else if (address.length > 255) return false;
+
+  const domainParts = address.split(".");
+
+  if (
+    domainParts.some((part) => {
+      return part.length > 63;
+    })
+  )
+    return false;
+
+  return regex.test(email);
+};
+
 exports.paginationObject = (paginationObject) => {
   const page = paginationObject.page || 1;
   const resultPerPage = paginationObject.itemsPerPage || 10;
@@ -142,4 +170,8 @@ exports.forgetPasswordUserEmailTemplate = (verifyUrl) => {
     </body>
   </html>`;
   return htmlData;
+};
+
+exports.invitationEmailTemplate = (link) => {
+  return ``;
 };

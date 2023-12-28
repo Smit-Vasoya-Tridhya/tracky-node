@@ -128,3 +128,10 @@ exports.editProfile = catchAsyncError(async (req, res, next) => {
 
   sendResponse(res, true, returnMessage("updateProfile"), editProfile, 200);
 });
+
+exports.sendInvitation = catchAsyncError(async (req, res, next) => {
+  const sendInvitation = await userService.sendInvitation(req.body, req.user);
+  if (typeof sendInvitation === "string")
+    return next(new AppError(sendInvitation, 400));
+  sendResponse(res, true, returnMessage("invitationSend"), {}, 200);
+});

@@ -2,12 +2,17 @@ const User = require("../models/userSchema");
 const Role = require("../models/roleSchema");
 const Track = require("../models/trackRecordSchema");
 const logger = require("../logger");
-const { returnMessage } = require("../utils/utils");
+const {
+  returnMessage,
+  validateEmail,
+  invitationEmailTemplate,
+} = require("../utils/utils");
 const PaymentService = require("./paymentService");
 const paymentService = new PaymentService();
 const PaymentHistory = require("../models/paymentHistorySchema");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const fs = require("fs");
+const sendEmail = require("../helpers/sendEmail");
 
 class UserService {
   updateProfile = async (payload, files, user) => {
@@ -207,6 +212,22 @@ class UserService {
       return true;
     } catch (error) {
       logger.error("Error while deleting the user", error);
+      return error.message;
+    }
+  };
+
+  sendInvitation = async (payload, user) => {
+    try {
+      const { email } = payload;
+      if (!validateEmail(email)) return returnMessage("invalidEmail");
+      const email_exist = await User.findOne({ email }).lean();
+      if (email_exist) return returnMessage("emailExist");
+      const link = `${process.env.REACT_APP_BASE_URL}/signup?referral=${user?.referral_code}`;
+      const email_template = invitationEmailTemplate(link);
+      sendEmail(email, email_template, returnMessage("invitationEmailSubject"));
+      return;
+    } catch (error) {
+      logger.error("Error while send an invitation", error);
       return error.message;
     }
   };

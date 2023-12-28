@@ -49,5 +49,9 @@
   "userDeleted": "User deleted successfully.",
   "2FactorVerified": "Two-factor authentication verified.",
   "editClient": "Client edited successfully.",
-  "trackRecordNotDefine": "Track record is not selected"
+  "trackRecordNotDefine": "Track record is not selected",
+  "referralCodeNotFound":"Referral code not found.",
+  "invalidEmail":"Invalid email format.",
+  "invitationEmailSubject":"",
+  "invitationSend":"Invitation sent successfully."
 }
