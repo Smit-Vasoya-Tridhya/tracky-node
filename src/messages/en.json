@@ -52,6 +52,6 @@
   "trackRecordNotDefine": "Track record is not selected",
   "referralCodeNotFound":"Referral code not found.",
   "invalidEmail":"Invalid email format.",
-  "invitationEmailSubject":"",
+  "invitationEmailSubject":"Inviation to the Tacky.",
   "invitationSend":"Invitation sent successfully."
 }

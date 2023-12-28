@@ -1,21 +1,21 @@
 const mongoose = require("mongoose");
 
-const referralSchema = new mongoose.Schema(
+const referralHistorySchema = new mongoose.Schema(
   {
     referral_code: {
       type: String,
       required: true,
     },
-    referral_user: {
+    referred_by: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    registered_user: {
+    referred_to: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
     },
+    email: { type: String },
     registered: {
       type: Boolean,
       default: false,
@@ -24,6 +24,9 @@ const referralSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Referral = mongoose.model("Referral", referralSchema);
+const ReferralHistory = mongoose.model(
+  "Referral_history",
+  referralHistorySchema
+);
 
-module.exports = Referral;
+module.exports = ReferralHistory;

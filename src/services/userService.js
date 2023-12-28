@@ -10,6 +10,7 @@ const {
 const PaymentService = require("./paymentService");
 const paymentService = new PaymentService();
 const PaymentHistory = require("../models/paymentHistorySchema");
+const ReferralHistory = require("../models/referralHistorySchema");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const fs = require("fs");
 const sendEmail = require("../helpers/sendEmail");
@@ -241,8 +242,18 @@ class UserService {
       const email_exist = await User.findOne({ email }).lean();
       if (email_exist) return returnMessage("emailExist");
       const link = `${process.env.REACT_APP_BASE_URL}/signup?referral=${user?.referral_code}`;
-      const email_template = invitationEmailTemplate(link);
+      const email_template = invitationEmailTemplate(
+        link,
+        user?.user_name ? user?.user_name : user?.first_name + user?.last_name
+      );
       sendEmail(email, email_template, returnMessage("invitationEmailSubject"));
+
+      await ReferralHistory.create({
+        referral_code: user?.referral_code,
+        referred_by: user?._id,
+        email,
+        registered: false,
+      });
       return;
     } catch (error) {
       logger.error("Error while send an invitation", error);

@@ -11,7 +11,7 @@ const speakeasy = require("speakeasy");
 const qrcode = require("qrcode");
 const { eventEmitter } = require("../socket");
 const ObjectId = require("mongoose").Types.ObjectId;
-const Referral = require("../models/referralSchema");
+const ReferralHistory = require("../models/referralHistorySchema");
 
 class AuthService {
   tokenGenerator = (payload) => {
@@ -59,7 +59,7 @@ class AuthService {
       if (payload?.referral_code) {
         const referral_registered = await this.referralSignUp({
           referral_code: payload?.referral_code,
-          registered_user: newUser,
+          referred_to: newUser,
         });
 
         if (typeof referral_registered === "string") {
@@ -200,7 +200,7 @@ class AuthService {
         if (payload?.referral_code) {
           const referral_registered = await this.referralSignUp({
             referral_code: payload?.referral_code,
-            registered_user: createUser,
+            referred_to: createUser,
           });
 
           if (typeof referral_registered === "string") {
@@ -309,7 +309,7 @@ class AuthService {
         if (payload?.referral_code) {
           const referral_registered = await this.referralSignUp({
             referral_code: payload?.referral_code,
-            registered_user: createUser,
+            referred_to: createUser,
           });
 
           if (typeof referral_registered === "string") {
@@ -406,17 +406,18 @@ class AuthService {
     }
   };
 
-  referralSignUp = async ({ referral_code, registered_user }) => {
+  referralSignUp = async ({ referral_code, referred_to }) => {
     try {
       const referral_code_exist = await User.findOne({ referral_code })
         .select("referral_code")
         .lean();
       if (!referral_code_exist) return returnMessage("referralCodeNotFound");
 
-      await Referral.create({
+      await ReferralHistory.create({
         referral_code,
-        referral_user: referral_code_exist._id,
-        registered_user: registered_user._id,
+        referred_by: referral_code_exist._id,
+        referred_to: referred_to._id,
+        email: referred_to?.email,
         registered: true,
       });
       return;

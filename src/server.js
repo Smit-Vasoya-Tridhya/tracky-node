@@ -20,6 +20,10 @@ app.use(express.json());
 app.use(cors({ origin: "*" }));
 app.use(morgan("dev"));
 app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
+app.use(
+  "/email-template",
+  express.static(path.join(__dirname, "public/email_template"))
+);
 app.use(rootRoutes);
 
 // handling error from all of the route
