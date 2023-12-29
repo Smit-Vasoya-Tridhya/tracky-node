@@ -16,6 +16,7 @@ const {
   verify_2FA_otp,
   deleteProfile,
   sendInvitation,
+  referralStatus,
 } = require("../controllers/userController");
 const { upload } = require("../helpers/multer");
 userRoute.post("/register", signUp);
@@ -43,4 +44,6 @@ userRoute.delete("/", deleteProfile);
 userRoute.get("/qrGenerate", generateQr);
 userRoute.post("/verify-2FA", verify_2FA_otp);
 userRoute.post("/invitation", sendInvitation);
+userRoute.get("/referral-status", referralStatus);
+
 module.exports = userRoute;

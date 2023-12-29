@@ -53,5 +53,6 @@
   "referralCodeNotFound":"Referral code not found.",
   "invalidEmail":"Invalid email format.",
   "invitationEmailSubject":"Inviation to the Tacky.",
-  "invitationSend":"Invitation sent successfully."
+  "invitationSend":"Invitation sent successfully.",
+  "referralFetched":"Referral status fetched."
 }

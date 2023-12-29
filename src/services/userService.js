@@ -260,6 +260,20 @@ class UserService {
       return error.message;
     }
   };
+
+  referralStatus = async (user) => {
+    try {
+      const successful_signup = await ReferralHistory.countDocuments({
+        referred_by: user?._id,
+        registered: true,
+        referral_code: user?.referral_code,
+      });
+      return { successful_signup };
+    } catch (error) {
+      logger.error(`Error while fetching referral status: ${error}`);
+      return error.message;
+    }
+  };
 }
 
 module.exports = UserService;
