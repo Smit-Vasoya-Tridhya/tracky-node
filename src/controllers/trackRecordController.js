@@ -81,3 +81,20 @@ exports.getTrackRecordByDate = catchAsyncError(async (req, res, next) => {
     200
   );
 });
+exports.getMonthlyData = catchAsyncError(async (req, res, next) => {
+  const getTrackMonthlyData = await trackService.getMonthlyData(
+    req.query,
+    req.user
+  );
+
+  if (typeof getTrackMonthlyData === "string")
+    return next(new AppError(getTrackMonthlyData, 400));
+
+  sendResponse(
+    res,
+    true,
+    returnMessage("fetchTrack"),
+    getTrackMonthlyData,
+    200
+  );
+});
