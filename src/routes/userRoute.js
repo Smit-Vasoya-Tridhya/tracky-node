@@ -15,6 +15,8 @@ const {
   generateQr,
   verify_2FA_otp,
   deleteProfile,
+  shareProfile,
+  sharePastClient,
 } = require("../controllers/userController");
 const { upload } = require("../helpers/multer");
 userRoute.post("/register", signUp);
@@ -25,6 +27,8 @@ userRoute.post("/forgetPassword", forgetPassword);
 userRoute.post("/resetPassword", resetPassword);
 userRoute.post("/appleSignIn", appleSignIn);
 userRoute.post("/resendEmail", resendEmail);
+userRoute.get("/shareProfile/:_id", shareProfile);
+userRoute.post("/sharePastClient/:_id", sharePastClient);
 userRoute.use(protect);
 userRoute.put(
   "/profile",

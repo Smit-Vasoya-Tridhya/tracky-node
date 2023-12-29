@@ -5,6 +5,10 @@ const logger = require("../logger");
 const { returnMessage } = require("../utils/utils");
 const PaymentService = require("./paymentService");
 const paymentService = new PaymentService();
+const PastClient = require("../services/pastclientService");
+const pastClient = new PastClient();
+const TrackService = require("../services/trackRecordService");
+const trackService = new TrackService();
 const PaymentHistory = require("../models/paymentHistorySchema");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const fs = require("fs");
@@ -225,6 +229,34 @@ class UserService {
       return true;
     } catch (error) {
       logger.error("Error while deleting the user", error);
+      return error.message;
+    }
+  };
+
+  shareProfile = async (params, query) => {
+    try {
+      if (!params._id) {
+        return returnMessage("userNotFound");
+      }
+      const profileData = await trackService.getTrackRecord(params);
+      const data = await trackService.getMonthlyData(query, params);
+
+      return { data, profileData };
+    } catch (error) {
+      logger.error("Error while sharing Profile", error);
+      return error.message;
+    }
+  };
+
+  sharePastClient = async (searchObj, params) => {
+    try {
+      if (!params._id) {
+        return returnMessage("userNotFound");
+      }
+      const pastClientShare = await pastClient.clientList(searchObj, params);
+      return pastClientShare;
+    } catch (error) {
+      logger.error("Error while sharing Profile", error);
       return error.message;
     }
   };

@@ -128,3 +128,24 @@ exports.editProfile = catchAsyncError(async (req, res, next) => {
 
   sendResponse(res, true, returnMessage("updateProfile"), editProfile, 200);
 });
+
+exports.shareProfile = catchAsyncError(async (req, res, next) => {
+  const shareProfile = await userService.shareProfile(req.params, req.query);
+
+  if (typeof shareProfile === "string")
+    return next(new AppError(shareProfile, 400));
+
+  sendResponse(res, true, returnMessage("shareProfile"), shareProfile, 200);
+});
+
+exports.sharePastClient = catchAsyncError(async (req, res, next) => {
+  const sharePastClient = await userService.sharePastClient(
+    req.body,
+    req.params
+  );
+
+  if (typeof sharePastClient === "string")
+    return next(new AppError(sharePastClient, 400));
+
+  sendResponse(res, true, returnMessage("shareProfile"), sharePastClient, 200);
+});

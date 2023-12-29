@@ -49,5 +49,6 @@
   "userDeleted": "User deleted successfully.",
   "2FactorVerified": "Two-factor authentication verified.",
   "editClient": "Client edited successfully.",
-  "trackRecordNotDefine": "Track record is not selected"
+  "trackRecordNotDefine": "Track record is not selected.",
+  "shareProfile": "Profile share successfully"
 }
