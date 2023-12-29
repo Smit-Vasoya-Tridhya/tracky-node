@@ -316,7 +316,7 @@ exports.invitationEmailTemplate = (link, user_name) => {
         <tr>
           <td class="content">
             <p>Join using my exclusive referral link:</p>
-            <p><a href=${link} class="button">Join Tracky</a></p>
+            <p><a href="${link}" class="button">Join Tracky</a></p>
             <p>
               🌟 Plus, when you sign up through my referral, we both enjoy special
               perks! It's a small token of appreciation.

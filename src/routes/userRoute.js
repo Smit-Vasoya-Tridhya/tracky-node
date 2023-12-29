@@ -43,6 +43,8 @@ userRoute.delete("/", deleteProfile);
 // this routes are used for the google authenticator and change password and email
 userRoute.get("/qrGenerate", generateQr);
 userRoute.post("/verify-2FA", verify_2FA_otp);
+
+// this route is used for the referral programme
 userRoute.post("/invitation", sendInvitation);
 userRoute.get("/referral-status", referralStatus);
 
