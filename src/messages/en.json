@@ -54,5 +54,6 @@
   "invalidEmail":"Invalid email format.",
   "invitationEmailSubject":"Inviation to the Tacky.",
   "invitationSend":"Invitation sent successfully.",
-  "referralFetched":"Referral status fetched."
+  "referralFetched":"Referral status fetched.",
+  "shareProfile": "Profile share successfully"
 }

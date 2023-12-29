@@ -108,7 +108,7 @@ class TrackRecordService {
       const monthlyData = await Track.aggregate([
         {
           $match: {
-            user_id: user._id,
+            user_id: profileData._id,
             date: {
               $gte: moment().startOf("year").toDate(),
               $lt: moment().toDate(),
@@ -182,13 +182,12 @@ class TrackRecordService {
           return {
             month,
             year: monthIndex === 0 ? currentYear - 1 : currentYear,
-            totalClose: 0,
-            totalCalls: 0,
+            avgDealSize: 0,
           };
         });
       };
 
-      const monthsCount = 12; // Default to the last 6 months if monthsAgo is not specified
+      const monthsCount = 12;
       const emptyMonthlyData = generateEmptyMonthlyData(monthsCount);
 
       const mergedData = emptyMonthlyData.map((emptyMonth) => ({
@@ -216,6 +215,11 @@ class TrackRecordService {
 
   getMonthlyData = async (query, user) => {
     try {
+      let profileData = await User.findById(user._id)
+        .select("-password -last_session")
+        .populate("role")
+        .lean();
+      if (!profileData) return returnMessage("profileNotExist");
       const daysAgo = query.days;
       const monthsAgo = query.months;
 
@@ -230,7 +234,7 @@ class TrackRecordService {
 
       const matchStage = {
         $match: {
-          user_id: user._id,
+          user_id: profileData._id,
           date: {
             $gte: startDate.toDate(),
             $lt: moment().toDate(),

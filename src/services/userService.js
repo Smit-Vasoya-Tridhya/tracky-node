@@ -9,6 +9,10 @@ const {
 } = require("../utils/utils");
 const PaymentService = require("./paymentService");
 const paymentService = new PaymentService();
+const PastClient = require("../services/pastclientService");
+const pastClient = new PastClient();
+const TrackService = require("../services/trackRecordService");
+const trackService = new TrackService();
 const PaymentHistory = require("../models/paymentHistorySchema");
 const ReferralHistory = require("../models/referralHistorySchema");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
@@ -261,6 +265,21 @@ class UserService {
     }
   };
 
+  shareProfile = async (params, query) => {
+    try {
+      if (!params._id) {
+        return returnMessage("userNotFound");
+      }
+      const profileData = await trackService.getTrackRecord(params);
+      const data = await trackService.getMonthlyData(query, params);
+
+      return { data, profileData };
+    } catch (error) {
+      logger.error("Error while sharing Profile", error);
+      return error.message;
+    }
+  };
+
   referralStatus = async (user) => {
     try {
       const successful_signup = await ReferralHistory.countDocuments({
@@ -271,6 +290,19 @@ class UserService {
       return { successful_signup };
     } catch (error) {
       logger.error(`Error while fetching referral status: ${error}`);
+      return error.message;
+    }
+  };
+
+  sharePastClient = async (searchObj, params) => {
+    try {
+      if (!params._id) {
+        return returnMessage("userNotFound");
+      }
+      const pastClientShare = await pastClient.clientList(searchObj, params);
+      return pastClientShare;
+    } catch (error) {
+      logger.error("Error while sharing Profile", error);
       return error.message;
     }
   };

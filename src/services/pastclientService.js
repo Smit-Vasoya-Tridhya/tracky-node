@@ -42,7 +42,7 @@ class PastClientService {
   clientList = async (searchObj, user) => {
     try {
       const pagination = paginationObject(searchObj);
-      const queryObj = { is_deleted: false };
+      const queryObj = { is_deleted: false, user_id: user._id };
 
       if (searchObj.search && searchObj.search !== "") {
         queryObj["$or"] = [
