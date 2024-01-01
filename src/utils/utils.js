@@ -247,8 +247,8 @@ exports.invitationEmailTemplate = (link, user_name) => {
               <td  style="margin-top: 20px;
               text-align: center;
               width: 100%;">
-                  <p>Join using my exclusive referral link:</p>
-                  <p><a href="${link}" 
+                  <p style="color: #ffffff;">Join using my exclusive referral link:</p>
+                  <p style="color: #ffffff;"><a href="${link}" 
                       style="display: inline-block;
               padding: 10px 20px;
               background-color: #2EDE9F;
@@ -256,10 +256,10 @@ exports.invitationEmailTemplate = (link, user_name) => {
               text-decoration: none;
               border-radius: 5px;"
                       >Join Tracky</a></p>
-                  <p>🌟 Plus, when you sign up through my referral, we both enjoy special perks! It's a small token of
+                  <p style="color: #ffffff;">🌟 Plus, when you sign up through my referral, we both enjoy special perks! It's a small token of
                       appreciation.</p>
-                  <p>Come on board and let's explore Tracky together!</p>
-                  <p>Cheers,<br>${user_name}</p>
+                  <p style="color: #ffffff;">Come on board and let's explore Tracky together!</p>
+                  <p style="color: #ffffff;">Cheers,<br>${user_name}</p>
               </td>
           </tr>
       </table>
