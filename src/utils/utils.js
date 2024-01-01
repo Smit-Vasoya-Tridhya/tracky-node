@@ -220,13 +220,13 @@ exports.invitationEmailTemplate = (link, user_name) => {
       <table class="container">
         <tr style="">
           <td class="">
-            <img src=${process.env.SERVER_URL}/email-template/logo_light.svg
+            <img src="${process.env.SERVER_URL}/email-template/logo_light.svg"
             alt="Tracky Logo"/>
           </td>
         </tr>
         <tr>
           <td>
-            <img src=${process.env.SERVER_URL}/email-template/dash_image.svg
+            <img src="${process.env.SERVER_URL}/email-template/dash_image.svg"
             alt="Dashboard image" style="width: 100%;"/>
           </td>
         </tr>
