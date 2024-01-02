@@ -63,8 +63,11 @@ class PastClientService {
         const keywordType = getKeywordType(searchObj.search);
         if (keywordType === "number") {
           const numericKeyword = parseInt(searchObj.search);
+
           queryObj["$or"].push({
             revenue_made: numericKeyword,
+          });
+          queryObj["$or"].push({
             closing_rate: numericKeyword,
           });
         } else if (keywordType === "date") {
