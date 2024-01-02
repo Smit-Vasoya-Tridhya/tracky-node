@@ -40,7 +40,7 @@ class AuthService {
 
       let random = crypto.randomBytes(32).toString("hex");
 
-      const link = `verifyemail?id=${random}`;
+      const link = `${process.env.REACT_APP_BASE_URL}/verifyemail?id=${random}`;
       const randomHash = crypto
         .createHash("sha256")
         .update(random)

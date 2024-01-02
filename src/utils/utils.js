@@ -56,7 +56,7 @@ exports.getKeywordType = (keyword) => {
     return "string";
   }
 };
-exports.registerUserEmailTemplate = (link) => {
+exports.registerUserEmailTemplate = (link, user_name) => {
   const htmlData = `
   <!DOCTYPE html>
   <html lang="en">
