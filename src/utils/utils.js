@@ -93,28 +93,28 @@ exports.registerUserEmailTemplate = (link) => {
               text-align: center;
               width: 100%;"
               >
-                  <p style="font-size: 18px; font-weight: 600;">Hi,</p>
-                  <p style="font-size: 16px; line-height: 24px;">Exciting news! I'm part of 
+                  <p style="font-size: 18px; font-weight: 600; color: #ffffff;">Hi,${user_name}</p>
+                  <p style="font-size: 16px; line-height: 24px; color: #ffffff;">Exciting news! I'm part of 
                       <a href="#" style="font-weight: 600; font-style: italic; text-decoration: underline; color: #2EDE9F;"> 
                   www.tracky.com
                   </a>, a fantastic community for Pitch generator,Convo craft and many more.</p>
-                  <p style="font-size: 16px; line-height: 24px; text-decoration: underline;">Below are few of glimpse of Tracky</p>
+                  <p style="font-size: 16px; line-height: 24px; text-decoration: underline; color: #ffffff;">Below are few of glimpse of Tracky</p>
               </td>
           </tr>
          <tr>
           <td>
               <ul style="width: 300px; margin: 0 auto; list-style: none; border: 1px solid #2EDE9F; border-radius: 10px; 
               padding: 10px;">
-                  <li style="border-bottom: 1px solid #848484; margin: 10px 0; padding-bottom: 10px;">
+                  <li style="border-bottom: 1px solid #848484; margin: 10px 0; padding-bottom: 10px;color: #ffffff;">
                       Profile Management
                   </li>
-                  <li style="border-bottom: 1px solid #848484; margin: 10px 0; padding-bottom: 10px;">
+                  <li style="border-bottom: 1px solid #848484; margin: 10px 0; padding-bottom: 10px;color: #ffffff;">
                       Pitch Generator
                   </li>
-                  <li style="border-bottom: 1px solid #848484; margin: 10px 0; padding-bottom: 10px;">
+                  <li style="border-bottom: 1px solid #848484; margin: 10px 0; padding-bottom: 10px;color: #ffffff;">
                       Convo Craft
                   </li>
-                  <li style="border-bottom: 1px solid #848484; margin: 10px 0; padding-bottom: 10px;">
+                  <li style="border-bottom: 1px solid #848484; margin: 10px 0; padding-bottom: 10px; color: #ffffff;">
                       Templates with AI Generator
                   </li>
                   <li style=" margin: 10px 0; color: #2EDE9F; font-weight: 600;">
