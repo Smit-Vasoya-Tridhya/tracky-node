@@ -103,7 +103,6 @@ const userSchema = new mongoose.Schema(
     },
     referral_code: {
       type: String,
-      unique: true,
     },
   },
   { timestamps: true }
@@ -111,7 +110,7 @@ const userSchema = new mongoose.Schema(
 
 const User = mongoose.model("User", userSchema);
 
-userSchema.index({ referral_code: 1 }, { unique: true });
+userSchema.index({ referral_code: 1 });
 userSchema.index({ email: 1 });
 
 module.exports = User;
