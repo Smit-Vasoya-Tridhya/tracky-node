@@ -5,5 +5,6 @@ package-lock.json
 ./public/images
 ./public/csv
 
-src/public
+src/public/csv
+src/public/uploads
 

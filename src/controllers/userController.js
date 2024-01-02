@@ -129,6 +129,26 @@ exports.editProfile = catchAsyncError(async (req, res, next) => {
   sendResponse(res, true, returnMessage("updateProfile"), editProfile, 200);
 });
 
+exports.sendInvitation = catchAsyncError(async (req, res, next) => {
+  const sendInvitation = await userService.sendInvitation(req.body, req.user);
+  if (typeof sendInvitation === "string")
+    return next(new AppError(sendInvitation, 400));
+  sendResponse(res, true, returnMessage("invitationSend"), {}, 200);
+});
+
+exports.referralStatus = catchAsyncError(async (req, res, next) => {
+  const referralStatus = await userService.referralStatus(req.user);
+  if (typeof referralStatus === "string")
+    return next(new AppError(referralStatus, 400));
+  sendResponse(
+    res,
+    true,
+    returnMessage("referralFetched"),
+    referralStatus,
+    200
+  );
+});
+
 exports.shareProfile = catchAsyncError(async (req, res, next) => {
   const shareProfile = await userService.shareProfile(req.params, req.query);
 

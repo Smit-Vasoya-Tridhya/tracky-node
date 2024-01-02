@@ -11,6 +11,7 @@ const speakeasy = require("speakeasy");
 const qrcode = require("qrcode");
 const { eventEmitter } = require("../socket");
 const ObjectId = require("mongoose").Types.ObjectId;
+const ReferralHistory = require("../models/referralHistorySchema");
 
 class AuthService {
   tokenGenerator = (payload) => {
@@ -55,6 +56,17 @@ class AuthService {
 
       if (!newUser) return returnMessage("default");
 
+      if (payload?.referral_code) {
+        const referral_registered = await this.referralSignUp({
+          referral_code: payload?.referral_code,
+          referred_to: newUser,
+        });
+
+        if (typeof referral_registered === "string") {
+          await User.findByIdAndDelete(newUser._id);
+          return referral_registered;
+        }
+      }
       return newUser;
     } catch (error) {
       logger.error("Error while signup", error);
@@ -128,9 +140,12 @@ class AuthService {
         .digest("hex");
 
       if (reqToken === tokens.token) {
+        const referral_code = await this.referralCodeGenerator();
+        if (!referral_code) return returnMessage("default");
+
         const updateUser = await User.findOneAndUpdate(
           { email: tokens.email, is_deleted: false },
-          { $set: { email_verified: true } },
+          { $set: { email_verified: true, referral_code } },
           { new: true }
         );
         const { password, ...userDataWithoutPassword } = updateUser.toObject();
@@ -162,6 +177,9 @@ class AuthService {
       });
 
       if (!existingUser) {
+        const referral_code = await this.referralCodeGenerator();
+        if (!referral_code) return returnMessage("default");
+
         const newUser = {
           email: user.email,
           password: user.password,
@@ -171,6 +189,7 @@ class AuthService {
           email_verified: true,
           google_sign_in: true,
           terms_privacy_policy: true,
+          referral_code,
         };
         const createUser = await User.create(newUser);
         const userResponse = createUser.toObject({
@@ -178,6 +197,17 @@ class AuthService {
           virtuals: false,
         });
         delete userResponse.password;
+        if (payload?.referral_code) {
+          const referral_registered = await this.referralSignUp({
+            referral_code: payload?.referral_code,
+            referred_to: createUser,
+          });
+
+          if (typeof referral_registered === "string") {
+            await User.findByIdAndDelete(createUser._id);
+            return referral_registered;
+          }
+        }
         return this.tokenGenerator(userResponse);
       } else {
         return this.tokenGenerator(existingUser);
@@ -259,11 +289,15 @@ class AuthService {
       }).lean();
 
       if (!existingUser) {
+        const referral_code = await this.referralCodeGenerator();
+        if (!referral_code) return returnMessage("default");
+
         const newUser = {
           email: decodedToken.email,
           email_verified: true,
           apple_sign_in: true,
           terms_privacy_policy: true,
+          referral_code,
         };
 
         const createUser = await User.create(newUser);
@@ -272,6 +306,17 @@ class AuthService {
           virtuals: false,
         });
         delete userResponse.password;
+        if (payload?.referral_code) {
+          const referral_registered = await this.referralSignUp({
+            referral_code: payload?.referral_code,
+            referred_to: createUser,
+          });
+
+          if (typeof referral_registered === "string") {
+            await User.findByIdAndDelete(createUser._id);
+            return referral_registered;
+          }
+        }
         return this.tokenGenerator(userResponse);
       }
       return this.tokenGenerator(existingUser);
@@ -358,6 +403,51 @@ class AuthService {
     } catch (error) {
       logger.error("error while updating the email and password", error);
       return error.message;
+    }
+  };
+
+  referralSignUp = async ({ referral_code, referred_to }) => {
+    try {
+      const referral_code_exist = await User.findOne({ referral_code })
+        .select("referral_code")
+        .lean();
+      if (!referral_code_exist) return returnMessage("referralCodeNotFound");
+
+      await ReferralHistory.create({
+        referral_code,
+        referred_by: referral_code_exist._id,
+        referred_to: referred_to._id,
+        email: referred_to?.email,
+        registered: true,
+      });
+      return;
+    } catch (error) {
+      logger.error("Error while referral SignUp", error);
+      return error.message;
+    }
+  };
+
+  referralCodeGenerator = async () => {
+    try {
+      const characters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      let referral_code = "";
+
+      // Generate the initial code
+      for (let i = 0; i < 8; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        referral_code += characters.charAt(randomIndex);
+      }
+
+      const referral_code_exist = await User.findOne({ referral_code })
+        .select("referral_code")
+        .lean();
+      if (referral_code_exist) return this.referralCodeGenerator();
+
+      return referral_code;
+    } catch (error) {
+      logger.error("Error while generating the referral code", error);
+      return false;
     }
   };
 }

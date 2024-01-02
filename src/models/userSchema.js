@@ -101,10 +101,17 @@ const userSchema = new mongoose.Schema(
     authenticator_secret: {
       type: Object,
     },
+    referral_code: {
+      type: String,
+      unique: true,
+    },
   },
   { timestamps: true }
 );
 
 const User = mongoose.model("User", userSchema);
+
+userSchema.index({ referral_code: 1 }, { unique: true });
+userSchema.index({ email: 1 });
 
 module.exports = User;

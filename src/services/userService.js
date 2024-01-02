@@ -2,7 +2,11 @@ const User = require("../models/userSchema");
 const Role = require("../models/roleSchema");
 const Track = require("../models/trackRecordSchema");
 const logger = require("../logger");
-const { returnMessage } = require("../utils/utils");
+const {
+  returnMessage,
+  validateEmail,
+  invitationEmailTemplate,
+} = require("../utils/utils");
 const PaymentService = require("./paymentService");
 const paymentService = new PaymentService();
 const PastClient = require("../services/pastclientService");
@@ -10,8 +14,10 @@ const pastClient = new PastClient();
 const TrackService = require("../services/trackRecordService");
 const trackService = new TrackService();
 const PaymentHistory = require("../models/paymentHistorySchema");
+const ReferralHistory = require("../models/referralHistorySchema");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const fs = require("fs");
+const sendEmail = require("../helpers/sendEmail");
 
 class UserService {
   updateProfile = async (payload, files, user) => {
@@ -233,6 +239,32 @@ class UserService {
     }
   };
 
+  sendInvitation = async (payload, user) => {
+    try {
+      const { email } = payload;
+      if (!validateEmail(email)) return returnMessage("invalidEmail");
+      const email_exist = await User.findOne({ email }).lean();
+      if (email_exist) return returnMessage("emailExist");
+      const link = `${process.env.REACT_APP_BASE_URL}/signup?referral=${user?.referral_code}`;
+      const email_template = invitationEmailTemplate(
+        link,
+        user?.user_name ? user?.user_name : user?.first_name + user?.last_name
+      );
+      sendEmail(email, email_template, returnMessage("invitationEmailSubject"));
+
+      await ReferralHistory.create({
+        referral_code: user?.referral_code,
+        referred_by: user?._id,
+        email,
+        registered: false,
+      });
+      return;
+    } catch (error) {
+      logger.error("Error while send an invitation", error);
+      return error.message;
+    }
+  };
+
   shareProfile = async (params, query) => {
     try {
       if (!params._id) {
@@ -244,6 +276,20 @@ class UserService {
       return { data, profileData };
     } catch (error) {
       logger.error("Error while sharing Profile", error);
+      return error.message;
+    }
+  };
+
+  referralStatus = async (user) => {
+    try {
+      const successful_signup = await ReferralHistory.countDocuments({
+        referred_by: user?._id,
+        registered: true,
+        referral_code: user?.referral_code,
+      });
+      return { successful_signup };
+    } catch (error) {
+      logger.error(`Error while fetching referral status: ${error}`);
       return error.message;
     }
   };
