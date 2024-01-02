@@ -190,6 +190,12 @@ exports.forgetPasswordUserEmailTemplate = (link, user_name) => {
         </td>
       </tr>
       <tr>
+              <td>
+                 <img src="${process.env.SERVER_URL}/email-template/dash_image.svg" alt="Dashboard image" style="width: 100%;"/> 
+              </td>
+          </tr>
+          <tr>
+      <tr>
         <td style="margin-top: 20px; text-align: center; width: 100%">
           <p style="color: #ffffff">
             Please reset your password by clicking below:
