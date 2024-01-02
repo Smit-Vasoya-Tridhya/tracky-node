@@ -45,8 +45,7 @@ class AuthService {
         .createHash("sha256")
         .update(random)
         .digest("hex");
-      const user_name =
-        newUser?.first_name + " " + newUser?.last_name || newUser?.user_name;
+      const user_name = newUser?.first_name + " " + newUser?.last_name;
       const message = utils.registerUserEmailTemplate(link, user_name);
       const subject = "Verify your email";
       sendEmail(payload.email, message, subject);
