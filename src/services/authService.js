@@ -229,14 +229,20 @@ class AuthService {
       if (!existingUser) return returnMessage("emailNotFound");
       const resetToken = crypto.randomBytes(32).toString("hex");
 
-      let verifyUrl = `forget-password?token=${resetToken}`;
+      let verifyUrl = `${process.env.REACT_APP_BASE_URL}/forget-password?token=${resetToken}`;
       existingUser.reset_password_token = crypto
         .createHash("sha256")
         .update(resetToken)
         .digest("hex");
       await existingUser.save();
-      const message = utils.forgetPasswordUserEmailTemplate(verifyUrl);
-      const subject = "Forgot Password Email";
+      const user_name =
+        existingUser?.first_name + " " + existingUser?.last_name ||
+        existingUser?.user_name;
+      const message = utils.forgetPasswordUserEmailTemplate(
+        verifyUrl,
+        user_name
+      );
+      const subject = "Reset your password now";
       sendEmail(email, message, subject);
       return true;
     } catch (error) {

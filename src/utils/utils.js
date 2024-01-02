@@ -58,117 +58,162 @@ exports.getKeywordType = (keyword) => {
 };
 exports.registerUserEmailTemplate = (link) => {
   const htmlData = `
-    <html>
-      <head>
-        <style>
-          /* Styles for the email template */
-          body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-          }
-          .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-          }
-          .header {
-            background-color: #4caf50;
-            color: white;
-            text-align: center;
-            padding: 10px;
-            border-radius: 10px 10px 0 0;
-          }
-          .content {
-            padding: 20px;
-          }
-          .button {
-            background-color: #4caf50;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            cursor: pointer;
-          }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <h1>Verify email</h1>
-          </div>
-          <div class="content">
-            <p>We received a request to verify your email. Click the button below to verify it:</p>
-            <a class="button" href="${process.env.REACT_APP_BASE_URL}/${link}">Verify Email</a>
-            <p>If you didn't request a verify your email, please ignore this email.</p>
-            <p>Best regards,<br>Your Company Name</p>
-          </div>
-        </div>
-      </body>
-    </html>`;
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Verify your email</title>
+      <style>
+      </style>
+  </head>
+  <body 
+  style="background-color: #262626;
+              color: #ffffff;
+              font-family: 'Arial', sans-serif;
+              margin: 0;
+              padding: 0;"
+  >
+      <table class="container"
+      style=" max-width: 600px;
+              margin: 20px auto;
+              padding: 20px;
+              background-color: #000000;
+              border-radius: 10px;
+              text-align: center;"
+      >
+          <tr >
+              <td class="" style="text-align: center;">
+                  <img src="${process.env.SERVER_URL}/email-template/logo_light.svg" alt="Tracky Logo" style="width: 100px;"/>
+              </td>
+          </tr>
+          <tr>
+              <td 
+              style="margin-top: 20px;
+              text-align: center;
+              width: 100%;"
+              >
+                  <p style="font-size: 18px; font-weight: 600;">Hi,</p>
+                  <p style="font-size: 16px; line-height: 24px;">Exciting news! I'm part of 
+                      <a href="#" style="font-weight: 600; font-style: italic; text-decoration: underline; color: #2EDE9F;"> 
+                  www.tracky.com
+                  </a>, a fantastic community for Pitch generator,Convo craft and many more.</p>
+                  <p style="font-size: 16px; line-height: 24px; text-decoration: underline;">Below are few of glimpse of Tracky</p>
+              </td>
+          </tr>
+         <tr>
+          <td>
+              <ul style="width: 300px; margin: 0 auto; list-style: none; border: 1px solid #2EDE9F; border-radius: 10px; 
+              padding: 10px;">
+                  <li style="border-bottom: 1px solid #848484; margin: 10px 0; padding-bottom: 10px;">
+                      Profile Management
+                  </li>
+                  <li style="border-bottom: 1px solid #848484; margin: 10px 0; padding-bottom: 10px;">
+                      Pitch Generator
+                  </li>
+                  <li style="border-bottom: 1px solid #848484; margin: 10px 0; padding-bottom: 10px;">
+                      Convo Craft
+                  </li>
+                  <li style="border-bottom: 1px solid #848484; margin: 10px 0; padding-bottom: 10px;">
+                      Templates with AI Generator
+                  </li>
+                  <li style=" margin: 10px 0; color: #2EDE9F; font-weight: 600;">
+                      And many more...
+                  </li>
+              </ul>
+          </td>
+         </tr>
+          <tr>
+              <td  style="margin-top: 20px;
+              text-align: center;
+              width: 100%;">
+                  <p style="color: #ffffff;">Please verify your email:</p>
+                  <p style="color: #ffffff;"><a href="${link}" 
+                      style="display: inline-block;
+              padding: 10px 20px;
+              background-color: #2EDE9F;
+              color: #000000;
+              text-decoration: none;
+              border-radius: 5px;"
+                      >Verify email</a></p>
+                
+              </td>
+          </tr>
+      </table>
+  </body>
+  </html>`;
   return htmlData;
 };
 
-exports.forgetPasswordUserEmailTemplate = (verifyUrl) => {
+exports.forgetPasswordUserEmailTemplate = (link, user_name) => {
   const htmlData = `
-  <html>
-    <head>
-      <style>
-        /* Styles for the email template */
-        body {
-          font-family: Arial, sans-serif;
-          background-color: #f4f4f4;
-          margin: 0;
-          padding: 0;
-        }
-        .container {
-          max-width: 600px;
-          margin: 0 auto;
-          padding: 20px;
-          background-color: #ffffff;
-          border-radius: 10px;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .header {
-          background-color: #4caf50;
-          color: white;
-          text-align: center;
-          padding: 10px;
-          border-radius: 10px 10px 0 0;
-        }
-        .content {
-          padding: 20px;
-        }
-        .button {
-          background-color: #4caf50;
-          color: white;
-          border: none;
-          padding: 10px 20px;
-          text-decoration: none;
-          border-radius: 5px;
-          cursor: pointer;
-        }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <div class="header">
-          <h1>Reset Password</h1>
-        </div>
-        <div class="content">
-          <p>We received a request to verify your email. Click the button below to reset it:</p>
-          <a class="button" href="${process.env.REACT_APP_BASE_URL}/${verifyUrl}">Reset Password</a>
-          <p>If you didn't request a password reset, please ignore this email.</p>
-          <p>Best regards,<br>Your Company Name</p>
-        </div>
-      </div>
-    </body>
-  </html>`;
+  <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify your email</title>
+    <style></style>
+  </head>
+  <body
+    style="
+      background-color: #262626;
+      color: #ffffff;
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+    "
+  >
+    <table
+      class="container"
+      style="
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #000000;
+        border-radius: 10px;
+        text-align: center;
+      "
+    >
+      <tr>
+        <td class="" style="text-align: center">
+          <img
+            src="${process.env.SERVER_URL}/email-template/logo_light.svg"
+            alt="Tracky Logo"
+            style="width: 100px"
+          />
+        </td>
+      </tr>
+      <tr>
+        <td style="margin-top: 20px; text-align: center; width: 100%">
+          <p style="font-size: 18px; font-weight: 600">Hi,${user_name}</p>
+        </td>
+      </tr>
+      <tr>
+        <td style="margin-top: 20px; text-align: center; width: 100%">
+          <p style="color: #ffffff">
+            Please reset your password by clicking below:
+          </p>
+          <p style="color: #ffffff">
+            <a
+              href="${link}"
+              style="
+                display: inline-block;
+                padding: 10px 20px;
+                background-color: #2ede9f;
+                color: #000000;
+                text-decoration: none;
+                border-radius: 5px;
+              "
+              >Reset password</a
+            >
+          </p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+`;
   return htmlData;
 };
 
