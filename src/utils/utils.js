@@ -186,7 +186,7 @@ exports.forgetPasswordUserEmailTemplate = (link, user_name) => {
       </tr>
       <tr>
         <td style="margin-top: 20px; text-align: center; width: 100%">
-          <p style="font-size: 18px; font-weight: 600">Hi,${user_name}</p>
+          <p style="font-size: 18px;color: #ffffff; font-weight: 600">Hi,${user_name}</p>
         </td>
       </tr>
       <tr>
