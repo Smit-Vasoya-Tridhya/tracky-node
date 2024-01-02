@@ -33,29 +33,4 @@ const swaggerDoc = require("./swagger/swagger.index");
 
 app.use("/swagger-doc", swagger.serve);
 app.use("/swagger-doc", swagger.setup(swaggerDoc));
-server.listen(port, async () => {
-  logger.info(`Server started at port:${port}`);
-  try {
-    const stripe = require("stripe")(
-      "sk_test_51OOesWChuAbH8fImWDZwTtUqlvWaQL7sRnoX5JzSpq6ufoa0PV9ylyGjtb5GStm8n7f8Umzk7akLFNxT9GXYj77I00F8AFkShp"
-    );
-    const subscription = await stripe.subscriptions.retrieve(
-      "sub_1OU3vxChuAbH8fImMZ9mh66i"
-    );
-    const newTime = 30 * 24 * 60 * 60;
-
-    const extendedSubscription = await stripe.subscriptions.update(
-      "sub_1OU3vxChuAbH8fImMZ9mh66i",
-      {
-        trial_end: subscription.current_period_end + 30 * 24 * 60 * 60, // Extend by 30 days (adjust as needed)
-      }
-    );
-
-    const subscription2 = await stripe.subscriptions.retrieve(
-      "sub_1OU3vxChuAbH8fImMZ9mh66i"
-    );
-    console.log(subscription2);
-  } catch (err) {
-    console.log(err.message, 55);
-  }
-});
+server.listen(port, () => logger.info(`Server started at port:${port}`));
