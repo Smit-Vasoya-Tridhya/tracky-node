@@ -385,12 +385,15 @@ class TrackRecordService {
     }
   };
 
-  getRecordByDate = async (params) => {
+  getRecordByDate = async (params, user) => {
     try {
       const parsedDate = moment(params.date);
       const date = parsedDate.utc().startOf("day");
       const formattedDate = date.format();
-      return await Track.findOne({ date: formattedDate }).lean();
+      return await Track.findOne({
+        date: formattedDate,
+        user_id: user._id,
+      }).lean();
     } catch (error) {
       logger.error("Error while fetch track record", error);
       return error.message;
