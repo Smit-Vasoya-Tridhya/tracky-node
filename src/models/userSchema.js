@@ -70,9 +70,7 @@ const userSchema = new mongoose.Schema(
     language: {
       type: String,
     },
-    skills: {
-      type: String,
-    },
+    skills: [{ type: String }],
     bound: {
       type: String,
     },
