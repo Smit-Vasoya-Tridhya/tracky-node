@@ -36,15 +36,26 @@ const upload = multer({
     fileSize: 1024 * 1024 * 1, // 1MB
   },
   fileFilter: (req, file, cb) => {
-    const allowedExtensions = [".jpg", ".jpeg", ".png", ".csv"];
+    const imageExtensions = [".jpg", ".jpeg", ".jfif", ".png"];
+    const csvExtensions = [".csv"];
     const fileExt = path.extname(file.originalname).toLowerCase();
-    if (!allowedExtensions.includes(fileExt)) {
-      const error = new Error(
-        `Only ${allowedExtensions.toString()} files are allowed.`
-      );
-      error.status = 400;
-      error.code = "FILE_FORMAT_NOT_MATCH";
-      return cb(error);
+
+    if (file.mimetype.startsWith("text/csv")) {
+      if (!csvExtensions.includes(fileExt)) {
+        const error = new Error("Only CSV files are allowed.");
+        error.status = 400;
+        error.code = "CSV_FILE_NOT_ALLOWED";
+        return cb(error);
+      }
+    } else if (file.mimetype.startsWith("image/")) {
+      if (!imageExtensions.includes(fileExt)) {
+        const error = new Error(
+          `Only ${imageExtensions.join(", ")} files are allowed.`
+        );
+        error.status = 400;
+        error.code = "IMAGE_FILE_NOT_ALLOWED";
+        return cb(error);
+      }
     }
 
     cb(null, true);

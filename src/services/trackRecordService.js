@@ -178,14 +178,16 @@ class TrackRecordService {
 
         const currentYear = moment().year();
         const currentMonthIndex = moment().month();
+        const currentDate = moment();
 
         return Array.from({ length: monthsCount }, (_, index) => {
-          const monthIndex = (currentMonthIndex - index + 12) % 12;
-          const month = months[monthIndex];
+          const pastDate = moment().subtract(index, "months");
+          const year = pastDate.year();
+          const month = months[pastDate.month()];
 
           return {
             month,
-            year: monthIndex === 0 ? currentYear - 1 : currentYear,
+            year,
             avgDealSize: 0,
           };
         });
@@ -193,7 +195,20 @@ class TrackRecordService {
 
       const monthsCount = 12;
       const emptyMonthlyData = generateEmptyMonthlyData(monthsCount);
-
+      const months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
       const mergedData = emptyMonthlyData.map((emptyMonth) => ({
         ...emptyMonth,
         ...monthlyData.find(
@@ -201,6 +216,12 @@ class TrackRecordService {
             data.month === emptyMonth.month && data.year === emptyMonth.year
         ),
       }));
+      mergedData.sort((a, b) => {
+        if (a.year !== b.year) {
+          return a.year - b.year;
+        }
+        return months.indexOf(a.month) - months.indexOf(b.month);
+      });
       const currentsYears = moment().year();
 
       const graphData = {
@@ -238,7 +259,7 @@ class TrackRecordService {
 
       const matchStage = {
         $match: {
-          user_id: profileData._id,
+          user_id: user._id,
           date: {
             $gte: startDate.toDate(),
             $lt: moment().toDate(),
@@ -319,32 +340,50 @@ class TrackRecordService {
             "Dec",
           ];
 
-          const currentYear = moment().year();
-          const currentMonthIndex = moment().month();
+          const currentDate = moment();
+          const currentYear = currentDate.year();
+          const currentMonthIndex = currentDate.month();
 
           return Array.from({ length: monthsCount }, (_, index) => {
-            const monthIndex = (currentMonthIndex - index + 12) % 12;
-            const month = months[monthIndex];
+            const pastDate = moment().subtract(index, "months");
+            const year = pastDate.year();
+            const month = months[pastDate.month()];
 
             return {
               month,
-              year: monthIndex === 0 ? currentYear - 1 : currentYear,
+              year,
               totalClose: 0,
               totalCalls: 0,
             };
           });
         };
-
+        const months = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ];
         const monthsCount = monthsAgo || 12; // Default to the last 6 months if monthsAgo is not specified
         const emptyMonthlyData = generateEmptyMonthlyData(monthsCount);
 
         const mergedData = emptyMonthlyData.map((emptyMonth) => ({
           ...emptyMonth,
-          ...monthlyData.find(
-            (data) =>
-              data.month === emptyMonth.month && data.year === emptyMonth.year
-          ),
+          ...monthlyData.find((data) => data.month === emptyMonth.month),
         }));
+        mergedData.sort((a, b) => {
+          if (a.year !== b.year) {
+            return a.year - b.year;
+          }
+          return months.indexOf(a.month) - months.indexOf(b.month);
+        });
         const currentsYears = moment().year();
         return { mergedData, currentsYears };
       }
