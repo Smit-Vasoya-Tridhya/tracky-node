@@ -62,7 +62,7 @@ const userSchema = new mongoose.Schema(
     },
     average_deal_size: {
       type: String,
-      default: "n/a",
+      default: 0,
     },
     plan: {
       type: String,
@@ -71,7 +71,7 @@ const userSchema = new mongoose.Schema(
       type: String,
     },
     skills: {
-      type: String,
+      type: [String],
     },
     bound: {
       type: String,

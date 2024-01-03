@@ -68,7 +68,10 @@ exports.fetchTrack = catchAsyncError(async (req, res, next) => {
 });
 
 exports.getTrackRecordByDate = catchAsyncError(async (req, res, next) => {
-  const getTrackRecordByDate = await trackService.getRecordByDate(req.params);
+  const getTrackRecordByDate = await trackService.getRecordByDate(
+    req.params,
+    req.user
+  );
 
   if (typeof getTrackRecordByDate === "string")
     return next(new AppError(getTrackRecordByDate, 400));

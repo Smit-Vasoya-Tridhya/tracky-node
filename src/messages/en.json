@@ -50,10 +50,14 @@
   "2FactorVerified": "Two-factor authentication verified.",
   "editClient": "Client edited successfully.",
   "trackRecordNotDefine": "Track record is not selected",
-  "referralCodeNotFound":"Referral code not found.",
-  "invalidEmail":"Invalid email format.",
-  "invitationEmailSubject":"Inviation to the Tacky.",
-  "invitationSend":"Invitation sent successfully.",
-  "referralFetched":"Referral status fetched.",
-  "shareProfile": "Profile share successfully"
+  "referralCodeNotFound": "Referral code not found.",
+  "invalidEmail": "Invalid email format.",
+  "invitationEmailSubject": "Inviation to the Tacky.",
+  "invitationSend": "Invitation sent successfully.",
+  "referralFetched": "Referral status fetched.",
+  "shareProfile": "Profile share successfully.",
+  "templateExist": "Template already exist.",
+  "createTemplate": "Template has been created.",
+  "updateTemplate": "Template has been updated.",
+  "templateList": "Template fetch successfully."
 }
