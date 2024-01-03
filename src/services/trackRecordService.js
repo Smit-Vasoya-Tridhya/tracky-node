@@ -5,6 +5,7 @@ const { format } = require("fast-csv");
 const moment = require("moment");
 const createReadStream = require("fast-csv");
 const User = require("../models/userSchema");
+const { default: mongoose } = require("mongoose");
 
 class TrackRecordService {
   getTrack = async (payload) => {
@@ -24,7 +25,10 @@ class TrackRecordService {
       const parsedDate = moment(payload.date);
       const date = parsedDate.utc().startOf("day");
       const formattedDate = date.format();
-      const existingData = await Track.findOne({ date: formattedDate });
+      const existingData = await Track.findOne({
+        date: formattedDate,
+        user_id: user._id,
+      });
 
       if (existingData) {
         return await Track.findByIdAndUpdate(
@@ -390,6 +394,7 @@ class TrackRecordService {
       const parsedDate = moment(params.date);
       const date = parsedDate.utc().startOf("day");
       const formattedDate = date.format();
+      // const user_id = new mongoose.Types.ObjectId(user._id);
       return await Track.findOne({
         date: formattedDate,
         user_id: user._id,
