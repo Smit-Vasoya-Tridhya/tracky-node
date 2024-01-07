@@ -419,6 +419,13 @@ class AuthService {
         .lean();
       if (!referral_code_exist) return returnMessage("referralCodeNotFound");
 
+      await ReferralHistory.deleteMany({
+        referral_code,
+        registered: false,
+        referred_by: referral_code_exist._id,
+        email: referred_to?.email,
+      });
+
       await ReferralHistory.create({
         referral_code,
         referred_by: referral_code_exist._id,
