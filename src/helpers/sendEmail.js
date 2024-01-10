@@ -2,7 +2,7 @@ const nodemailer = require("nodemailer");
 require("dotenv").config();
 
 const sendEmail = async (email, message, subject) => {
-  console.log("Mail", process.env.MAI);
+  console.log("Mail", process.env.MAIL);
   console.log("Mail PAssword", process.env.MAILPASSWORD);
   const transporter = nodemailer.createTransport({
     port: 465,
