@@ -30,7 +30,7 @@ exports.updateTemplate = catchAsyncError(async (req, res, next) => {
 });
 
 exports.templateList = catchAsyncError(async (req, res, next) => {
-  const templateList = await templateService.templateList(req.body);
+  const templateList = await templateService.templateList(req.body, req.user);
 
   if (typeof templateList === "string")
     return next(new AppError(templateList, 400));
@@ -41,7 +41,8 @@ exports.templateList = catchAsyncError(async (req, res, next) => {
 exports.templateListById = catchAsyncError(async (req, res, next) => {
   const templateListById = await templateService.templateListById(
     req.body,
-    req.params
+    req.params,
+    req.user
   );
 
   if (typeof templateListById === "string")

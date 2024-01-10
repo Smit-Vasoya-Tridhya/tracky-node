@@ -6,6 +6,7 @@ const {
   returnMessage,
   validateEmail,
   invitationEmailTemplate,
+  paginationObject,
 } = require("../utils/utils");
 const PaymentService = require("./paymentService");
 const paymentService = new PaymentService();
@@ -303,6 +304,196 @@ class UserService {
       return pastClientShare;
     } catch (error) {
       logger.error("Error while sharing Profile", error);
+      return error.message;
+    }
+  };
+
+  userList = async (searchObj) => {
+    try {
+      const pagination = paginationObject(searchObj);
+      const queryObj = { is_deleted: false };
+
+      if (searchObj.search && searchObj.search !== "") {
+        queryObj["$or"] = [
+          {
+            user_name: {
+              $regex: searchObj.search.toLowerCase(),
+              $options: "i",
+            },
+          },
+          {
+            last_name: {
+              $regex: searchObj.search.toLowerCase(),
+              $options: "i",
+            },
+          },
+          {
+            first_name: {
+              $regex: searchObj.search.toLowerCase(),
+              $options: "i",
+            },
+          },
+          {
+            status: {
+              $regex: searchObj.search.toLowerCase(),
+              $options: "i",
+            },
+          },
+          {
+            "role_Data.key": {
+              $regex: searchObj.search.toLowerCase(),
+              $options: "i",
+            },
+          },
+        ];
+      }
+
+      const aggregationPipeline = [
+        {
+          $lookup: {
+            from: "roles",
+            localField: "role",
+            foreignField: "_id",
+            as: "role_Data",
+            pipeline: [{ $project: { key: 1, label: 1 } }],
+          },
+        },
+        {
+          $unwind: "$role_Data",
+        },
+
+        {
+          $match: queryObj,
+        },
+        {
+          $project: {
+            key: 1,
+            label: 1,
+            role_Data: 1,
+            createdAt: 1,
+            updatedAt: 1,
+            first_name: 1,
+            last_name: 1,
+            user_name: 1,
+            email: 1,
+            country: 1,
+            status: 1,
+            is_deleted: 1,
+            role_Data_key: "$role_Data.key",
+          },
+        },
+      ];
+
+      const userList = await User.aggregate(aggregationPipeline)
+        .sort(pagination.sort)
+        .skip(pagination.skip)
+        .limit(pagination.resultPerPage);
+
+      const userData = await User.aggregate(aggregationPipeline);
+
+      userList.forEach((user) => {
+        if (!user.user_name && user.first_name && user.last_name) {
+          user.user_name = `${user.first_name}${user.last_name}`;
+        }
+      });
+      return {
+        userList,
+        pageCount: Math.ceil(userData.length / pagination.resultPerPage) || 0,
+      };
+    } catch (error) {
+      logger.error("Error while fetch user list ", error);
+      return error.message;
+    }
+  };
+
+  getUserById = async (payload, id) => {
+    try {
+      let profileData = await User.findById(id)
+        .select("-password -last_session")
+        .populate("role")
+        .lean();
+      if (!profileData) return returnMessage("profileNotExist");
+
+      let trackData = await Track.find({ user_id: id }).lean();
+      const sumData = {};
+
+      if (profileData?.role?.key === "setter") {
+        sumData.total_chat = trackData.reduce(
+          (sum, entry) => sum + entry.total_chat,
+          0
+        );
+      } else if (profileData?.role?.key === "closer") {
+        sumData.total_calls = trackData.reduce(
+          (sum, entry) => sum + entry.total_calls,
+          0
+        );
+      }
+
+      sumData.total_client = trackData.reduce(
+        (sum, entry) => sum + entry.total_client,
+        0
+      );
+      sumData.total_closed = trackData.reduce(
+        (sum, entry) => sum + entry.total_closed,
+        0
+      );
+      sumData.total_lost = trackData.reduce(
+        (sum, entry) => sum + entry.total_lost,
+        0
+      );
+
+      const totalDealSize = trackData.reduce(
+        (sum, entry) => sum + entry.average_deal_size,
+        0
+      );
+      sumData.average_deal_size =
+        trackData.length > 0 ? totalDealSize / trackData.length : 0;
+
+      return { profileData, sumData };
+    } catch (error) {
+      logger.error("Error while fetching user ", error);
+      return error.message;
+    }
+  };
+
+  updateUserStatus = async (payload, id) => {
+    try {
+      return await User.findByIdAndUpdate(id, payload, { new: true });
+    } catch (error) {
+      logger.error("Error while updating status", error);
+      return error.message;
+    }
+  };
+
+  deleteUser = async (id) => {
+    try {
+      const user_exist = await User.findById(id).lean();
+      if (!user_exist) return returnMessage("userIdNotExist");
+
+      const promise_array = [
+        User.findByIdAndUpdate(user_exist._id, {
+          email_verified: false,
+          on_board: false,
+          is_deleted: true,
+          plan_purchased: false,
+          plan_purchased_type: null,
+          authenticator_secret: {},
+        }),
+        PaymentHistory.updateMany(
+          { user_id: user_exist._id },
+          { active: false }
+        ),
+      ];
+
+      if (user_exist?.subscription_id)
+        promise_array.push(
+          stripe.subscriptions.cancel(user_id?.subscription_id)
+        );
+
+      await Promise.all(promise_array);
+      return true;
+    } catch (error) {
+      logger.error("Error while deleting the user", error);
       return error.message;
     }
   };

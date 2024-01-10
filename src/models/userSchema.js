@@ -47,9 +47,6 @@ const userSchema = new mongoose.Schema(
     profile_image: {
       type: String,
     },
-    profile_name: {
-      type: String,
-    },
     bio: {
       type: String,
     },
@@ -95,6 +92,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ["year", "month", null],
       default: null,
+    },
+    status: {
+      type: String,
+      enum: ["Active", "Deactive"],
+      default: "Active",
     },
     authenticator_secret: {
       type: Object,

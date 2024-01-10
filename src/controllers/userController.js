@@ -169,3 +169,37 @@ exports.sharePastClient = catchAsyncError(async (req, res, next) => {
 
   sendResponse(res, true, returnMessage("shareProfile"), sharePastClient, 200);
 });
+exports.userList = catchAsyncError(async (req, res, next) => {
+  const userList = await userService.userList(req.body);
+
+  if (typeof userList === "string") return next(new AppError(userList, 400));
+
+  sendResponse(res, true, returnMessage("userList"), userList, 200);
+});
+exports.userView = catchAsyncError(async (req, res, next) => {
+  const userView = await userService.getUserById(req.body, req.params.id);
+
+  if (typeof userView === "string") return next(new AppError(userView, 400));
+
+  sendResponse(res, true, returnMessage("userfetch"), userView, 200);
+});
+exports.userStatusUpdate = catchAsyncError(async (req, res, next) => {
+  const userStatusUpdate = await userService.updateUserStatus(
+    req.body,
+    req.params.id
+  );
+
+  if (typeof userStatusUpdate === "string")
+    return next(new AppError(userStatusUpdate, 400));
+
+  sendResponse(res, true, returnMessage("userUpdated"), userStatusUpdate, 200);
+});
+
+exports.userdelete = catchAsyncError(async (req, res, next) => {
+  const userdelete = await userService.deleteUser(req.params.id);
+
+  if (typeof userdelete === "string")
+    return next(new AppError(userdelete, 400));
+
+  sendResponse(res, true, returnMessage("userdeleted"), userdelete, 200);
+});

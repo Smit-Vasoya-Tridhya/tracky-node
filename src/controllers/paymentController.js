@@ -36,3 +36,18 @@ exports.webhook = catchAsyncError(async (req, res, next) => {
 
   return sendResponse(res, true, "", {}, 200);
 });
+
+exports.paymentHistory = catchAsyncError(async (req, res, next) => {
+  const payment_history = await paymentService.paymentHistory(req.body);
+
+  if (typeof payment_history === "string")
+    return next(new AppError(payment_history, 400));
+
+  sendResponse(
+    res,
+    true,
+    returnMessage("paymentHistoryFetched"),
+    payment_history,
+    200
+  );
+});

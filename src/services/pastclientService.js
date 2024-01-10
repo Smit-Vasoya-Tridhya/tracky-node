@@ -34,7 +34,7 @@ class PastClientService {
       });
       return newClient.save();
     } catch (error) {
-      logger.error("Error while create Profile", error);
+      logger.error("Error while create Client", error);
       return error.message;
     }
   };
@@ -123,7 +123,7 @@ class PastClientService {
         { new: true }
       );
     } catch (error) {
-      logger.error("Error while fetching client", error);
+      logger.error("Error while deleting client", error);
       return error.message;
     }
   };

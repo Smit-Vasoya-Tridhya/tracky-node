@@ -31,6 +31,7 @@ class AuthService {
       const user = await User.findOne({
         email: payload.email,
         is_deleted: false,
+        status: "Acitve",
       }).lean();
       if (user) return returnMessage("userExists");
 

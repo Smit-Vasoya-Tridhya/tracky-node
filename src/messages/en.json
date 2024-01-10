@@ -59,5 +59,10 @@
   "templateExist": "Template already exist.",
   "createTemplate": "Template has been created.",
   "updateTemplate": "Template has been updated.",
-  "templateList": "Template fetch successfully."
+  "templateList": "Template fetch successfully.",
+  "fetchTrack": "Track record fetch successfully.",
+  "updateTrack": "Track record updated successfully.",
+  "userUpdated": "User updated successfully.",
+  "createlike": "Added in favourite.",
+  "deletelike": "Like is removed."
 }

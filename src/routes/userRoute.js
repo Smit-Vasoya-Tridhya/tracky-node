@@ -19,11 +19,19 @@ const {
   referralStatus,
   shareProfile,
   sharePastClient,
+  userList,
+  userView,
+  userStatusUpdate,
+  userdelete,
 } = require("../controllers/userController");
 const { upload } = require("../helpers/multer");
 userRoute.post("/register", signUp);
 userRoute.post("/login", login);
 userRoute.get("/verify", verifyEmails);
+userRoute.post("/user-list", userList);
+userRoute.get("/view/:id", userView);
+userRoute.put("/status/:id", userStatusUpdate);
+userRoute.delete("/delete-user/:id", userdelete);
 userRoute.post("/googleSignIn", googleSignIn);
 userRoute.post("/forgetPassword", forgetPassword);
 userRoute.post("/resetPassword", resetPassword);

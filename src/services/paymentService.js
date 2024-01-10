@@ -1,6 +1,6 @@
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const StripePlan = require("../models/stripePlanSchema");
-const { returnMessage } = require("../utils/utils");
+const { returnMessage, paginationObject } = require("../utils/utils");
 const User = require("../models/userSchema");
 const PaymentHistory = require("../models/paymentHistorySchema");
 const logger = require("../logger");
@@ -141,6 +141,57 @@ class PaymentService {
     } catch (error) {
       logger.error("error while handling webhook", error);
       return false;
+    }
+  };
+
+  paymentHistory = async (payload) => {
+    try {
+      const pagination = paginationObject(payload);
+      const queryObj = {};
+      if (payload.search && payload.search !== "") {
+        queryObj["$or"] = [
+          {
+            "user_id.email": { $regex: payload.search, $options: "i" },
+          },
+        ];
+      }
+      const aggregate_arr = [
+        {
+          $lookup: {
+            from: "users",
+            localField: "user_id",
+            foreignField: "_id",
+            as: "user_id",
+            pipeline: [{ $project: { email: 1, plan_purchased_type: 1 } }],
+          },
+        },
+        { $unwind: "$user_id" },
+        { $match: queryObj },
+      ];
+      console.log(pagination);
+      const [payments, totalPayments, monthly_plan, yearly_plan] =
+        await Promise.all([
+          PaymentHistory.aggregate(aggregate_arr)
+            .sort(pagination.sort)
+            .skip(pagination.skip)
+            .limit(pagination.resultPerPage),
+          PaymentHistory.aggregate(aggregate_arr),
+          StripePlan.findOne({ interval: "month" }).lean(),
+          StripePlan.findOne({ interval: "year" }).lean(),
+        ]);
+
+      payments.forEach((payment) => {
+        if (payment?.interval == "month") payment.plan = monthly_plan;
+        else if (payment?.interval == "year") payment.plan = yearly_plan;
+      });
+      return {
+        payments,
+        page_count:
+          Math.ceil(totalPayments.length / pagination.resultPerPage) || 0,
+      };
+    } catch (error) {
+      logger.error(`Error While feching payment history: ${error}`);
+      return error.message;
     }
   };
 }

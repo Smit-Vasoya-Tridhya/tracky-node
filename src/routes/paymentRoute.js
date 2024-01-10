@@ -7,6 +7,7 @@ const {
   getPlans,
   checkoutSession,
   webhook,
+  paymentHistory,
 } = require("../controllers/paymentController");
 
 paymentRoute.post(
@@ -14,6 +15,7 @@ paymentRoute.post(
   express.raw({ type: "application/json" }),
   webhook
 );
+paymentRoute.post("/history", paymentHistory);
 
 paymentRoute.use(protect);
 paymentRoute.post("/create", createPlan);

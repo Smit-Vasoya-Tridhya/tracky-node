@@ -56,7 +56,7 @@ class TemplateService {
     }
   };
 
-  templateList = async (searchObj) => {
+  templateList = async (searchObj, user) => {
     try {
       const pagination = paginationObject(searchObj);
       const queryObj = { is_deleted: false };
@@ -93,7 +93,7 @@ class TemplateService {
       }
 
       if (searchObj.filter === "favorites") {
-        queryObj["$and"] = [{ "role_Data.key": "favorites" }];
+        queryObj["$and"] = [{ "isFav.is_like": true }];
       }
 
       const aggregationPipeline = [
@@ -110,7 +110,26 @@ class TemplateService {
           $unwind: "$role_Data",
         },
         {
+          $lookup: {
+            from: "favourites",
+            localField: "_id",
+            foreignField: "templateId",
+            as: "isFav",
+          },
+        },
+        {
           $match: queryObj,
+        },
+        {
+          $addFields: {
+            isFav: {
+              $cond: {
+                if: { $eq: [{ $size: "$isFav" }, 0] },
+                then: null,
+                else: { $arrayElemAt: ["$isFav", 0] },
+              },
+            },
+          },
         },
         {
           $project: {
@@ -120,6 +139,24 @@ class TemplateService {
             role_Data: 1,
             createdAt: 1,
             updatedAt: 1,
+            isFav: {
+              $cond: {
+                if: { $eq: ["$isFav", null] },
+                then: null,
+                else: {
+                  $cond: {
+                    if: {
+                      $and: [
+                        { $eq: ["$isFav.templateId", "$_id"] },
+                        { $eq: ["$isFav.userId", user._id] },
+                      ],
+                    },
+                    then: "$isFav",
+                    else: null,
+                  },
+                },
+              },
+            },
           },
         },
       ];
@@ -129,14 +166,20 @@ class TemplateService {
         .skip(pagination.skip)
         .limit(pagination.resultPerPage);
 
-      return templateData;
+      const templatecounts = await Template.aggregate(aggregationPipeline);
+
+      return {
+        templateData,
+        pageCount:
+          Math.ceil(templatecounts.length / pagination.resultPerPage) || 0,
+      };
     } catch (error) {
       logger.error("Error while updating template", error);
       return error.message;
     }
   };
 
-  templateListById = async (searchObj, params) => {
+  templateListById = async (searchObj, params, user) => {
     try {
       const pagination = paginationObject(searchObj);
       const queryObj = { is_deleted: false };
@@ -156,6 +199,7 @@ class TemplateService {
               $options: "i",
             },
           },
+
           {
             "role_Data.key": {
               $regex: searchObj.search.toLowerCase(),
@@ -174,9 +218,8 @@ class TemplateService {
       }
 
       if (searchObj.filter === "favorites") {
-        queryObj["$and"] = [{ "role_Data.key": "favorites" }];
+        queryObj["$and"] = [{ "isFav.is_like": true }];
       }
-
       const aggregationPipeline = [
         {
           $lookup: {
@@ -191,7 +234,26 @@ class TemplateService {
           $unwind: "$role_Data",
         },
         {
+          $lookup: {
+            from: "favourites",
+            localField: "_id",
+            foreignField: "templateId",
+            as: "isFav",
+          },
+        },
+        {
           $match: queryObj,
+        },
+        {
+          $addFields: {
+            isFav: {
+              $cond: {
+                if: { $eq: [{ $size: "$isFav" }, 0] },
+                then: null,
+                else: { $arrayElemAt: ["$isFav", 0] },
+              },
+            },
+          },
         },
         {
           $project: {
@@ -201,6 +263,24 @@ class TemplateService {
             role_Data: 1,
             createdAt: 1,
             updatedAt: 1,
+            isFav: {
+              $cond: {
+                if: { $eq: ["$isFav", null] },
+                then: null,
+                else: {
+                  $cond: {
+                    if: {
+                      $and: [
+                        { $eq: ["$isFav.templateId", "$_id"] },
+                        { $eq: ["$isFav.userId", user._id] },
+                      ],
+                    },
+                    then: "$isFav",
+                    else: null,
+                  },
+                },
+              },
+            },
           },
         },
       ];

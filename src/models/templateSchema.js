@@ -19,6 +19,7 @@ const templateSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    template_type:{}
   },
   { timestamps: true }
 );
