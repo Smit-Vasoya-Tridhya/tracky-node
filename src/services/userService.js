@@ -25,19 +25,37 @@ class UserService {
     try {
       if (!payload.role) return returnMessage("roleUndefined");
       if (!payload.track_record) return returnMessage("trackRecordNotDefine");
+      const {
+        role,
+        bio,
+        average_deal_size,
+        country,
+        skills,
+        language,
+        time_zone,
+        bound,
+        last_name,
+        first_name,
+      } = payload;
 
       let profileImageFileName, trackRecordCsvFileName;
       if (files["profile_image"]) {
         profileImageFileName = "uploads/" + files["profile_image"][0]?.filename;
       }
-
       await User.findByIdAndUpdate(
         user._id,
         {
-          payload,
+          role,
+          last_name,
+          first_name,
+          bio,
+          average_deal_size,
+          country,
+          skills,
+          language,
+          time_zone,
           profile_image: profileImageFileName,
-          role: payload.role,
-          bio: payload.bio,
+          bound,
         },
         { new: true }
       );

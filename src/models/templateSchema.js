@@ -19,7 +19,12 @@ const templateSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    template_type:{}
+    template_type: {
+      enum: ["personal", "community"],
+      type: String,
+      default: "personal",
+    },
+    selected_role: { type: String },
   },
   { timestamps: true }
 );
