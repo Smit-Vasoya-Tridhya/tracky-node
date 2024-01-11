@@ -2,6 +2,7 @@ const User = require("../models/userSchema");
 const Role = require("../models/roleSchema");
 const Track = require("../models/trackRecordSchema");
 const logger = require("../logger");
+const moment = require("moment");
 const {
   returnMessage,
   validateEmail,
@@ -83,6 +84,13 @@ class UserService {
           const columns = line.split(",");
           if (columns.some((column) => column.trim() === "")) {
             logger.info("Skipping row with empty column");
+            return;
+          }
+          const currentDate = moment().format("MM-DD-YYYY");
+          const csvDate = moment(columns[0], "MM-DD-YYYY");
+
+          if (csvDate.isAfter(currentDate)) {
+            logger.info("Skipping row with future date");
             return;
           }
 
