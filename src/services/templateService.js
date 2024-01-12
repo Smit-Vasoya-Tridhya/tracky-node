@@ -7,6 +7,7 @@ class TemplateService {
   createTemplate = async (payload, user) => {
     try {
       payload.user_id = user._id;
+
       const template = await Template.create(payload);
       return template;
     } catch (error) {
@@ -81,6 +82,7 @@ class TemplateService {
               $options: "i",
             },
           },
+          // { "isFav.userId": user._id },
         ];
       }
 
@@ -93,7 +95,10 @@ class TemplateService {
       }
 
       if (searchObj.filter === "favorites") {
-        queryObj["$and"] = [{ "isFav.is_like": true }];
+        queryObj["$and"] = [
+          { "isFav.is_like": true },
+          { "isFav.userId": user._id },
+        ];
       }
 
       const aggregationPipeline = [
@@ -112,8 +117,19 @@ class TemplateService {
         {
           $lookup: {
             from: "favourites",
-            localField: "_id",
-            foreignField: "templateId",
+            let: { templateId: "$_id", userId: user._id },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ["$templateId", "$$templateId"] },
+                      { $eq: ["$userId", "$$userId"] },
+                    ],
+                  },
+                },
+              },
+            ],
             as: "isFav",
           },
         },
@@ -139,22 +155,18 @@ class TemplateService {
             role_Data: 1,
             createdAt: 1,
             updatedAt: 1,
+            templateId: "$isFav.templateId",
             isFav: {
               $cond: {
-                if: { $eq: ["$isFav", null] },
-                then: null,
-                else: {
-                  $cond: {
-                    if: {
-                      $and: [
-                        { $eq: ["$isFav.templateId", "$_id"] },
-                        { $eq: ["$isFav.userId", user._id] },
-                      ],
-                    },
-                    then: "$isFav",
-                    else: null,
-                  },
+                if: {
+                  $and: [
+                    { $ne: ["$isFav", null] },
+                    { $eq: ["$isFav.templateId", "$_id"] },
+                    { $eq: ["$isFav.userId", user._id] },
+                  ],
                 },
+                then: "$isFav",
+                else: null,
               },
             },
           },
@@ -182,7 +194,7 @@ class TemplateService {
   templateListById = async (searchObj, params, user) => {
     try {
       const pagination = paginationObject(searchObj);
-      const queryObj = { is_deleted: false };
+      const queryObj = { is_deleted: false, template_type: "personal" };
 
       queryObj.user_id = new mongoose.Types.ObjectId(params.id);
       if (searchObj.search && searchObj.search !== "") {
@@ -218,8 +230,12 @@ class TemplateService {
       }
 
       if (searchObj.filter === "favorites") {
-        queryObj["$and"] = [{ "isFav.is_like": true }];
+        queryObj["$and"] = [
+          { "isFav.is_like": true },
+          { "isFav.userId": user._id },
+        ];
       }
+
       const aggregationPipeline = [
         {
           $lookup: {
@@ -236,8 +252,19 @@ class TemplateService {
         {
           $lookup: {
             from: "favourites",
-            localField: "_id",
-            foreignField: "templateId",
+            let: { templateId: "$_id", userId: user._id },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ["$templateId", "$$templateId"] },
+                      { $eq: ["$userId", "$$userId"] },
+                    ],
+                  },
+                },
+              },
+            ],
             as: "isFav",
           },
         },
@@ -263,22 +290,18 @@ class TemplateService {
             role_Data: 1,
             createdAt: 1,
             updatedAt: 1,
+            templateId: "$isFav.templateId",
             isFav: {
               $cond: {
-                if: { $eq: ["$isFav", null] },
-                then: null,
-                else: {
-                  $cond: {
-                    if: {
-                      $and: [
-                        { $eq: ["$isFav.templateId", "$_id"] },
-                        { $eq: ["$isFav.userId", user._id] },
-                      ],
-                    },
-                    then: "$isFav",
-                    else: null,
-                  },
+                if: {
+                  $and: [
+                    { $ne: ["$isFav", null] },
+                    { $eq: ["$isFav.templateId", "$_id"] },
+                    { $eq: ["$isFav.userId", user._id] },
+                  ],
                 },
+                then: "$isFav",
+                else: null,
               },
             },
           },

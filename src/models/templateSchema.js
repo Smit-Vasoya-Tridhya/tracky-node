@@ -11,6 +11,9 @@ const templateSchema = new mongoose.Schema(
         value: {
           type: String,
         },
+        level: {
+          type: String,
+        },
       },
     ],
     user_id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
