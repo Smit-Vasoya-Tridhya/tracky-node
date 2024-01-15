@@ -15,6 +15,11 @@ const http = require("http");
 const { socket_connection } = require("./socket");
 const server = http.createServer(app);
 socket_connection(server);
+const PaymentHistory = require("./models/paymentHistorySchema");
+const ReferralHistory = require("./models/referralHistorySchema");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const moment = require("moment");
+const cron = require("node-cron");
 
 app.use(express.json());
 app.use(cors({ origin: "*" }));
@@ -26,10 +31,68 @@ app.use(
 );
 app.use(rootRoutes);
 
+// Run the Cron Job to avail one month free of the referral
+cron.schedule("5 0 */1 * *", async () => {
+  try {
+    logger.info("Cron Job Started");
+    const referrals = await ReferralHistory.distinct("referred_by", {
+      registered: true,
+    });
+    console.log(referrals, 41);
+    referrals.forEach(async (referral) => {
+      const total_referral = await ReferralHistory.countDocuments({
+        referred_by: referral?.referred_by,
+        registered: true,
+      });
+      if (total_referral !== 10) return;
+
+      const payment_history = await PaymentHistory.findOne({
+        user_id: referral?.referred_by,
+      })
+        .populate("user_id")
+        .sort({ createdAt: 1 })
+        .lean();
+      if (!payment_history) return;
+      if (
+        !payment_history?.user_id ||
+        (payment_history?.user_id &&
+          payment_history?.user_id?.subscription_id !== "" &&
+          payment_history?.user_id?.plan_purchased &&
+          payment_history?.user_id?.plan_purchased_type !== null)
+      )
+        return;
+
+      const start_date = moment(payment_history?.user_id?.last_reward_date);
+      const end_date = moment();
+      const years_difference = end_date.diff(start_date, "years");
+      if (years_difference <= 1) return;
+
+      if (payment_history?.user_id?.last_reward_date || years_difference >= 1) {
+        await stripe.subscriptions.update(
+          payment_history?.user_id?.subscription_id,
+          {
+            trial_end: subscription.current_period_end + 30 * 24 * 60 * 60, // Extend by 30 days
+          }
+        );
+
+        await User.findByIdAndUpdate(payment_history?.user_id?._id, {
+          last_reward_date: moment(),
+        });
+        console.log(referral?._id);
+      }
+    });
+  } catch (error) {
+    logger.error(
+      `Error while running cron job of the one month free referral: ${error}`
+    );
+  }
+});
+
 // handling error from all of the route
 app.use(errorHandler);
 
 const swaggerDoc = require("./swagger/swagger.index");
+const User = require("./models/userSchema");
 
 app.use("/swagger-doc", swagger.serve);
 app.use("/swagger-doc", swagger.setup(swaggerDoc));
