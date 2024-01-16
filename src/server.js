@@ -80,7 +80,7 @@ cron.schedule("5 0 */1 * *", async () => {
         );
 
         await User.findByIdAndUpdate(payment_history?.user_id?._id, {
-          last_reward_date: moment(),
+          last_reward_date: moment().format(),
         });
         console.log(referral?._id);
       }
