@@ -61,13 +61,17 @@ cron.schedule("5 0 */1 * *", async () => {
           payment_history?.user_id?.plan_purchased_type !== null)
       )
         return;
-
-      const start_date = moment(payment_history?.user_id?.last_reward_date);
-      const end_date = moment();
-      const years_difference = end_date.diff(start_date, "years");
-      if (years_difference <= 1) return;
-
-      if (payment_history?.user_id?.last_reward_date || years_difference >= 1) {
+      let years_difference = 0;
+      if (payment_history?.user_id?.last_reward_date) {
+        const start_date = moment(payment_history?.user_id?.last_reward_date);
+        const end_date = moment();
+        years_difference = end_date.diff(start_date, "years");
+        if (years_difference <= 1) return;
+      }
+      if (
+        !payment_history?.user_id?.last_reward_date ||
+        years_difference >= 1
+      ) {
         await stripe.subscriptions.update(
           payment_history?.user_id?.subscription_id,
           {
