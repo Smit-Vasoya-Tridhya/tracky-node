@@ -76,11 +76,11 @@ class AuthService {
         const resetToken = crypto.randomBytes(32).toString("hex");
 
         let verifyUrl = `reset-password?token=${resetToken}`;
-        existingUser.reset_password_token = crypto
+        existingAdmin.reset_password_token = crypto
           .createHash("sha256")
           .update(resetToken)
           .digest("hex");
-        await existingUser.save();
+        await existingAdmin.save();
         const message = utils.forgetPasswordAdminEmailTemplate(verifyUrl);
         const subject = "Forgot Password Email";
         sendEmail(email, message, subject);
