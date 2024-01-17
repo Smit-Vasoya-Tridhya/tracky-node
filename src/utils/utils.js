@@ -374,7 +374,7 @@ exports.registerAdminEmailTemplate = (link) => {
           </div>
           <div class="content">
             <p>We received a request to verify your email. Click the button below to verify it:</p>
-            <a class="button" href="${process.env.REACT_APP_BASE_URL}/${link}">Verify Email</a>
+            <a class="button" href="${process.env.REACT_APP_ADMIN_BASE_URL}/${link}">Verify Email</a>
             <p>If you didn't request a verify your email, please ignore this email.</p>
             <p>Best regards,<br>Your Company Name</p>
           </div>
@@ -432,7 +432,7 @@ exports.forgetPasswordAdminEmailTemplate = (verifyUrl) => {
         </div>
         <div class="content">
           <p>We received a request to verify your email. Click the button below to reset it:</p>
-          <a class="button" href="${process.env.REACT_APP_BASE_URL}/${verifyUrl}">Reset Password</a>
+          <a class="button" href="${process.env.REACT_APP_ADMIN_BASE_URL}/${verifyUrl}">Reset Password</a>
           <p>If you didn't request a password reset, please ignore this email.</p>
           <p>Best regards,<br>Your Company Name</p>
         </div>
