@@ -27,7 +27,10 @@ const templateSchema = new mongoose.Schema(
       type: String,
       default: "personal",
     },
+    template_title: { type: String },
+    template_discription: { type: String },
     selected_role: { type: String },
+    pitch_type: { type: String },
   },
   { timestamps: true }
 );

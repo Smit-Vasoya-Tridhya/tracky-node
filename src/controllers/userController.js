@@ -169,6 +169,8 @@ exports.sharePastClient = catchAsyncError(async (req, res, next) => {
 
   sendResponse(res, true, returnMessage("shareProfile"), sharePastClient, 200);
 });
+
+//admin apis
 exports.userList = catchAsyncError(async (req, res, next) => {
   const userList = await userService.userList(req.body);
 
@@ -176,6 +178,7 @@ exports.userList = catchAsyncError(async (req, res, next) => {
 
   sendResponse(res, true, returnMessage("userList"), userList, 200);
 });
+
 exports.userView = catchAsyncError(async (req, res, next) => {
   const userView = await userService.getUserById(req.body, req.params.id);
 
@@ -183,6 +186,7 @@ exports.userView = catchAsyncError(async (req, res, next) => {
 
   sendResponse(res, true, returnMessage("userfetch"), userView, 200);
 });
+
 exports.userStatusUpdate = catchAsyncError(async (req, res, next) => {
   const userStatusUpdate = await userService.updateUserStatus(
     req.body,

@@ -1,0 +1,11 @@
+[
+  {
+    "first_name": "John",
+    "last_name": "Doe",
+    "email": "keyurmtridhyatech@gmail.com",
+    "password": "Test@123",
+    "country": "USA",
+    "email_verified": true,
+    "admin_name": "Super Admin"
+  }
+]

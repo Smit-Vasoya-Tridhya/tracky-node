@@ -30,7 +30,11 @@ app.use(rootRoutes);
 app.use(errorHandler);
 
 const swaggerDoc = require("./swagger/swagger.index");
+const { insertData } = require("../seeder");
 
 app.use("/swagger-doc", swagger.serve);
 app.use("/swagger-doc", swagger.setup(swaggerDoc));
-server.listen(port, () => logger.info(`Server started at port:${port}`));
+server.listen(port, async () => {
+  // await insertData();
+  logger.info(`Server started at port:${port}`);
+});

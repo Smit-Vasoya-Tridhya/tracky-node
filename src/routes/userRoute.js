@@ -25,13 +25,16 @@ const {
   userdelete,
 } = require("../controllers/userController");
 const { upload } = require("../helpers/multer");
+const { Adminprotect } = require("../middlewares/adminMiddleware");
 userRoute.post("/register", signUp);
 userRoute.post("/login", login);
 userRoute.get("/verify", verifyEmails);
-userRoute.post("/user-list", userList);
-userRoute.get("/view/:id", userView);
-userRoute.put("/status/:id", userStatusUpdate);
-userRoute.delete("/delete-user/:id", userdelete);
+//admin route
+userRoute.post("/list", Adminprotect, userList);
+userRoute.get("/view/:id", Adminprotect, userView);
+userRoute.put("/status/:id", Adminprotect, userStatusUpdate);
+userRoute.delete("/delete/:id", Adminprotect, userdelete);
+// upto here
 userRoute.post("/googleSignIn", googleSignIn);
 userRoute.post("/forgetPassword", forgetPassword);
 userRoute.post("/resetPassword", resetPassword);

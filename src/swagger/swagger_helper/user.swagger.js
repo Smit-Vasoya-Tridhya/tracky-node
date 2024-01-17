@@ -419,6 +419,39 @@ const googleSignIn = {
     },
   },
 };
+const appleSignIn = {
+  tags: ["Users"],
+  description: "Apple SignIn",
+  summary: "Apple SignIn",
+  requestBody: {
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            idToken: {
+              type: "string",
+              descripition: "Enter your token",
+              required: true,
+            },
+          },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      descripition: "ok",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+          },
+        },
+      },
+    },
+  },
+};
 const usersRoutes = {
   "/api/v1/user/login": {
     post: login,
@@ -446,6 +479,9 @@ const usersRoutes = {
   },
   "/api/v1/user/googleSignIn": {
     post: googleSignIn,
+  },
+  "/api/v1/user/appleSignIn": {
+    post: appleSignIn,
   },
 };
 

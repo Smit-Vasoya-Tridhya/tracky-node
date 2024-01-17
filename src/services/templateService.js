@@ -114,6 +114,7 @@ class TemplateService {
         {
           $unwind: "$role_Data",
         },
+
         {
           $lookup: {
             from: "favourites",
@@ -156,6 +157,7 @@ class TemplateService {
             createdAt: 1,
             updatedAt: 1,
             templateId: "$isFav.templateId",
+            pitch_type: 1,
             isFav: {
               $cond: {
                 if: {
@@ -291,6 +293,7 @@ class TemplateService {
             createdAt: 1,
             updatedAt: 1,
             templateId: "$isFav.templateId",
+            pitch_type: 1,
             isFav: {
               $cond: {
                 if: {
@@ -316,6 +319,29 @@ class TemplateService {
       return templateData;
     } catch (error) {
       logger.error("Error while updating template", error);
+      return error.message;
+    }
+  };
+
+  templateById = async (id) => {
+    try {
+      let templateData = await Template.findById(id).lean();
+      if (!templateData) return returnMessage("templateNotFound");
+      return templateData;
+    } catch (error) {
+      logger.error("Error while getting  template", error);
+      return error.message;
+    }
+  };
+
+  templateUpdate = async (id, payload) => {
+    try {
+      let updatedTemplate = await Template.findByIdAndUpdate(id, payload, {
+        new: true,
+      });
+      return updatedTemplate;
+    } catch (error) {
+      logger.error("Error while updating  template", error);
       return error.message;
     }
   };

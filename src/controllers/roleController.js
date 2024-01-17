@@ -12,3 +12,12 @@ exports.roleList = catchAsyncError(async (req, res, next) => {
 
   sendResponse(res, true, returnMessage("RoleList"), RoleList, 200);
 });
+
+exports.createRole = catchAsyncError(async (req, res, next) => {
+  const createRole = await roleService.createRole(req.body, req.user);
+
+  if (typeof createRole === "string")
+    return next(new AppError(createRole, 400));
+
+  sendResponse(res, true, returnMessage("createRole"), createRole, 200);
+});

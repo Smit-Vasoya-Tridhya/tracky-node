@@ -64,5 +64,7 @@
   "updateTrack": "Track record updated successfully.",
   "userUpdated": "User updated successfully.",
   "createlike": "Added in favourite.",
-  "deletelike": "Like is removed."
+  "deletelike": "Like is removed.",
+  "templateNotFound": "Template not found.",
+  "getTemplate": "Template fetch successfully."
 }

@@ -3,6 +3,7 @@ const {
   updateTemplate,
   templateList,
   templateListById,
+  templateById,
 } = require("../controllers/templateController");
 const { protect } = require("../middlewares/authMiddleware");
 const templateRoute = require("express").Router();
@@ -11,4 +12,5 @@ templateRoute.post("/add", createTemplate);
 templateRoute.post("/list", templateList);
 templateRoute.post("/listById/:id", templateListById);
 templateRoute.put("/update/:id", updateTemplate);
+templateRoute.get("/templateById/:id", templateById);
 module.exports = templateRoute;

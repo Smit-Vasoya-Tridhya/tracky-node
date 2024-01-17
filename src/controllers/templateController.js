@@ -50,3 +50,26 @@ exports.templateListById = catchAsyncError(async (req, res, next) => {
 
   sendResponse(res, true, returnMessage("templateList"), templateListById, 200);
 });
+
+exports.templateById = catchAsyncError(async (req, res, next) => {
+  const getTemplate = await templateService.templateById(
+    req.params.id,
+    req.user
+  );
+
+  if (typeof getTemplate === "string")
+    return next(new AppError(getTemplate, 400));
+
+  sendResponse(res, true, returnMessage("getTemplate"), getTemplate, 200);
+});
+
+exports.editTemplate = catchAsyncError(async () => {
+  const updateTemplate = await templateService.templateUpdate(
+    req.params.id,
+    req.body
+  );
+  if (typeof updateTemplate === "string")
+    return next(new AppError(updateTemplate, 400));
+
+  sendResponse(res, true, returnMessage("updateTemplate"), updateTemplate, 200);
+});

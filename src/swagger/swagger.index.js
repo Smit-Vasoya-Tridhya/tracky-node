@@ -20,6 +20,10 @@ const swaggerDoc = {
       url: process.env.SERVER_URL,
       description: "Staging server",
     },
+    {
+      url: `http://172.16.1.237:3000`,
+      description: "ip server",
+    },
   ],
   security: [
     {
