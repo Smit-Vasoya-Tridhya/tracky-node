@@ -104,6 +104,7 @@ const userSchema = new mongoose.Schema(
     referral_code: {
       type: String,
     },
+    last_reward_date: { type: Date },
   },
   { timestamps: true }
 );
