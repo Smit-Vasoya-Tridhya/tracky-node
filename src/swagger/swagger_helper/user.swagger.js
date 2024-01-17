@@ -452,6 +452,223 @@ const appleSignIn = {
     },
   },
 };
+
+const deleteProfile = {
+  tags: ["Users"],
+  description: "Delete User Client ",
+  summary: "Delete User Client ",
+  parameters: [
+    // {
+    //   name: "token",
+    //   description:
+    //     "an authorization header, Please add Bearer keyword before token",
+    //   in: "header",
+    //   type: "string",
+    //   required: true,
+    //   example: "Bearer",
+    // },
+    // {
+    //   name: "id",
+    //   in: "path",
+    //   description: "ID of the past client",
+    //   required: true,
+    //   // schema: {
+    //   //   type: "string",
+    //   // },
+    // },
+  ],
+
+  responses: {
+    200: {
+      descripition: "ok",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+          },
+        },
+      },
+    },
+  },
+};
+
+const userList = {
+  tags: ["Users"],
+  description: "Users list",
+  summary: "Users list",
+  parameters: [
+    {
+      name: "token",
+      description: "Add admin token",
+      in: "header",
+      type: "string",
+      required: true,
+      example: "Bearer",
+    },
+    // {
+    //   name: "id",
+    //   in: "params",
+    //   description: "id",
+    //   required: true,
+    // },
+  ],
+  requestBody: {
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            search: {
+              type: "string",
+              descripition: "Enter your search",
+              required: true,
+            },
+            sortField: {
+              type: "string",
+              descripition: "Enter your sortField",
+              required: true,
+            },
+            sortOrder: {
+              type: "string",
+              descripition: "Enter your sortOrder",
+              required: true,
+            },
+            itemsPerPage: {
+              type: "string",
+              descripition: "Enter your itemsPerPage",
+              required: true,
+            },
+            page: {
+              type: "number",
+              descripition: "Enter your page",
+              required: true,
+            },
+          },
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      descripition: "ok",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+          },
+        },
+      },
+    },
+  },
+};
+const getUserById = {
+  tags: ["Users"],
+  description: "Get Users ",
+  summary: "Get Users ",
+  parameters: [
+    // {
+    //   name: "token",
+    //   description:
+    //     "an authorization header, Please add Bearer keyword before token",
+    //   in: "header",
+    //   type: "string",
+    //   required: true,
+    //   example: "Bearer",
+    // },
+    {
+      name: "id",
+      in: "path",
+      description: "id",
+      required: true,
+    },
+  ],
+
+  responses: {
+    200: {
+      descripition: "ok",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+          },
+        },
+      },
+    },
+  },
+};
+
+const deleteUser = {
+  tags: ["Users"],
+  description: "Delete User Client ",
+  summary: "Delete User Client ",
+  parameters: [
+    // {
+    //   name: "token",
+    //   description:
+    //     "an authorization header, Please add Bearer keyword before token",
+    //   in: "header",
+    //   type: "string",
+    //   required: true,
+    //   example: "Bearer",
+    // },
+    {
+      name: "id",
+      in: "path",
+      description: "ID of the User",
+      required: true,
+      // schema: {
+      //   type: "string",
+      // },
+    },
+  ],
+
+  responses: {
+    200: {
+      descripition: "ok",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+          },
+        },
+      },
+    },
+  },
+};
+const updateStatus = {
+  tags: ["Users"],
+  description: "Edit User profile",
+  summary: "Edit User profile",
+  requestBody: {
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            status: {
+              type: "string",
+              descripition: "Enter Satus",
+              required: true,
+            },
+          },
+        },
+      },
+    },
+  },
+
+  responses: {
+    200: {
+      descripition: "ok",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+          },
+        },
+      },
+    },
+  },
+};
 const usersRoutes = {
   "/api/v1/user/login": {
     post: login,
@@ -482,6 +699,21 @@ const usersRoutes = {
   },
   "/api/v1/user/appleSignIn": {
     post: appleSignIn,
+  },
+  "/api/v1/user/list": {
+    post: userList,
+  },
+  "/api/v1/user/view/{id}": {
+    post: getUserById,
+  },
+  "/api/v1/user/status/{id}": {
+    post: updateStatus,
+  },
+  "/api/v1/user/delete/{id}": {
+    post: deleteUser,
+  },
+  "/api/v1/user": {
+    delete: deleteProfile,
   },
 };
 

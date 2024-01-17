@@ -19,6 +19,13 @@ class TemplateService {
   updateTemplate = async (payload, id) => {
     try {
       const updates = payload.template;
+      const {
+        template_type,
+        template_title,
+        template_discription,
+        selected_role,
+        pitch_type,
+      } = payload;
       let result;
 
       for (const { key, value } of updates) {
@@ -33,18 +40,39 @@ class TemplateService {
             result = await Template.insertOne({
               _id: id.id,
               template: [{ key, value }],
+              template_type,
+              template_title,
+              template_discription,
+              selected_role,
+              pitch_type,
             });
           } else {
             result = await Template.findOneAndUpdate(
               { _id: id.id },
-              { $addToSet: { template: { key, value } } },
+              {
+                $addToSet: { template: { key, value } },
+                $set: {
+                  template_type,
+                  template_title,
+                  template_discription,
+                  selected_role,
+                  pitch_type,
+                },
+              },
               { new: true }
             );
           }
         } else {
           result = await Template.findOneAndUpdate(
             { _id: id.id, "template.key": key },
-            { $set: { "template.$.value": value } },
+            {
+              $set: { "template.$.value": value },
+              template_type,
+              template_title,
+              template_discription,
+              selected_role,
+              pitch_type,
+            },
             { new: true }
           );
         }
