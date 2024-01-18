@@ -7,7 +7,6 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const sendEmail = require("../helpers/sendEmail");
 const utils = require("../utils/utils");
-const ObjectId = require("mongoose").Types.ObjectId;
 
 class AuthService {
   tokenGenerator = (payload) => {

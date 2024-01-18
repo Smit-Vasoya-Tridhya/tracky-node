@@ -1,13 +1,7 @@
 const Admin = require("../models/adminSchema");
-const Staff = require("../models/staffSchema");
 const logger = require("../logger");
 const { returnMessage } = require("../utils/utils");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const crypto = require("crypto");
-const sendEmail = require("../helpers/sendEmail");
-const utils = require("../utils/utils");
-const ObjectId = require("mongoose").Types.ObjectId;
 
 class AdminService {
   getAdmin = async (user) => {

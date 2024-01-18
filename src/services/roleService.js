@@ -4,7 +4,7 @@ const { returnMessage } = require("../utils/utils");
 const AdminRole = require("../models/adminRoleSchema");
 
 class RoleService {
-  RoleList = async (payload) => {
+  RoleList = async () => {
     try {
       return await Role.find().lean();
     } catch (error) {

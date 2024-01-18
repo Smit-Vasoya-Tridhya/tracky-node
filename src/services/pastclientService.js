@@ -1,7 +1,5 @@
 const PastClient = require("../models/pastClientSchema");
-const user = require("../models/userSchema");
 const logger = require("../logger");
-const mongoose = require("mongoose");
 const {
   returnMessage,
   paginationObject,

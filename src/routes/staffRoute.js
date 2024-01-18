@@ -8,7 +8,6 @@ const {
   editStatus,
 } = require("../controllers/staff.controller");
 const { Adminprotect } = require("../middlewares/adminMiddleware");
-const { protect } = require("../middlewares/authMiddleware");
 
 staffRoute.use(Adminprotect);
 

@@ -1,6 +1,5 @@
 const Favourite = require("../models/favouriteModel");
 const logger = require("../logger");
-const { returnMessage } = require("../utils/utils");
 
 class favouriteService {
   createFavourite = async (payload, user) => {

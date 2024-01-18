@@ -1,6 +1,4 @@
 const catchAsyncError = require("../helpers/catchAsyncError");
-const RoleService = require("../services/roleService");
-const roleService = new RoleService();
 const StaffService = require("../services/staffService");
 const staffService = new StaffService();
 const AppError = require("./../helpers/errorHandler");
