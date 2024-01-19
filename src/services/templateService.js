@@ -88,7 +88,7 @@ class TemplateService {
   templateList = async (searchObj, user) => {
     try {
       const pagination = paginationObject(searchObj);
-      const queryObj = { is_deleted: false };
+      const queryObj = { is_deleted: false, template_type: "community" };
 
       if (searchObj.search && searchObj.search !== "") {
         queryObj["$or"] = [
@@ -224,7 +224,7 @@ class TemplateService {
   templateListById = async (searchObj, params, user) => {
     try {
       const pagination = paginationObject(searchObj);
-      const queryObj = { is_deleted: false, template_type: "personal" };
+      const queryObj = { is_deleted: false };
 
       queryObj.user_id = new mongoose.Types.ObjectId(params.id);
       if (searchObj.search && searchObj.search !== "") {
@@ -321,6 +321,7 @@ class TemplateService {
             createdAt: 1,
             updatedAt: 1,
             templateId: "$isFav.templateId",
+            template_type: 1,
             pitch_type: 1,
             isFav: {
               $cond: {
