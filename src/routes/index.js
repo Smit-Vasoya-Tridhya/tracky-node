@@ -10,6 +10,7 @@ const templateRoute = require("./templateRoute");
 const favouriteRoute = require("./favouriteRoute");
 const staffRoute = require("./staffRoute");
 const adminRoute = require("./adminRoute");
+const pitchRoute = require("./pitchRoute");
 
 router.use("/api/v1/user", userRoute);
 router.use("/api/v1/profile", profileRoute);
@@ -21,4 +22,6 @@ router.use("/api/v1/template", templateRoute);
 router.use("/api/v1/favourite", favouriteRoute);
 router.use("/api/v1/Staff", staffRoute);
 router.use("/api/v1/admin", adminRoute);
+router.use("/api/v1/pitch", pitchRoute);
+
 module.exports = router;
