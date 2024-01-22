@@ -139,7 +139,7 @@ class PitchService {
 
   getAllPitch = async (user) => {
     try {
-      return await Pitch.find({ user_id: user?._id }).select("name").lean();
+      return await Pitch.find({ user_id: user?._id }).lean();
     } catch (error) {
       logger.error(`Error while getting all pitch: ${error}`);
     }
