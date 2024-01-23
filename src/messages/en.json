@@ -66,5 +66,8 @@
   "createlike": "Added in favourite.",
   "deletelike": "Like is removed.",
   "templateNotFound": "Template not found.",
-  "getTemplate": "Template fetch successfully."
+  "getTemplate": "Template fetch successfully.",
+  "pitchNotFound": "Pitch not found.",
+  "pitchFetch": "Pitch fetched successfully.",
+  "pitchUpdated": "Pitch name updated."
 }
