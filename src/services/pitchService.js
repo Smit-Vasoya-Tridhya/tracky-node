@@ -10,27 +10,27 @@ class PitchService {
     try {
       const system_role = {
         role: "system",
-        content: `Act like you are ${payload?.selected_role} to make a pitch and never leave that role.`,
+        content: `Immerse yourself in the ${payload?.selected_role} of a skilled sales professional and deliver a compelling pitch. Stay in character throughout the interaction.`,
       };
       let template_questions = "";
       payload.template.forEach((temp, index) => {
         const question = temp?.key;
         const answer = temp?.value;
 
-        template_questions += `
-        ${index + 1} Question: ${question}
-                     Answer: ${answer} \n`;
+        template_questions += `${
+          index + 1
+        } Question: ${question} \n\t Answer: ${answer} \n`;
       });
 
-      const prompt = `
-      Provide information for ${payload?.user_prompt} based on the below questions and answers.
-      So generate the best overall speech by considering the questions and it's answers and give 
-      the result as a overall, do not give response with question based.Please provide the response
-      in the well format so it should contain new line, proper paragraph, proper link, etc. 
-      whatever is required to show the response to the html file.
-      ${template_questions}.`;
+      // const prompt = `Provide information for ${payload?.user_prompt} based on the below questions and answers.
+      // Generate the overall speech by considering the questions and it's answers and give the
+      // result as a overall and short, do not give response with question based.
+      // Please provide in well manner format.\n
+      // ${template_questions}.`;
 
-      console.log(prompt);
+      // Prompt provided by the client
+      const prompt = `Generate a concise and impactful sales pitch by incorporating the provided questions and answers seamlessly. Craft the speech in a well-structured format, avoiding question-based responses. Begin with an engaging introduction using placeholders like ‘Hey, it’s ,’ and ensure the pitch is both concise and highly persuasive. Strive for a short but powerful presentation that leaves a lasting impression.
+      ${template_questions}`;
 
       return [system_role, { role: "user", content: prompt }];
     } catch (error) {
@@ -89,7 +89,7 @@ class PitchService {
         _id: pitch_id,
         user_id: user?._id,
       }).lean();
-      pitch.history.splice(0, 2);
+      pitch?.history.splice(0, 2);
       return pitch;
     } catch (error) {
       logger.error(`Error while getting the Pitch: ${error}`);

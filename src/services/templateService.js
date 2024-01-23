@@ -186,6 +186,7 @@ class TemplateService {
             updatedAt: 1,
             templateId: "$isFav.templateId",
             pitch_type: 1,
+            template_title: 1,
             isFav: {
               $cond: {
                 if: {
@@ -322,6 +323,7 @@ class TemplateService {
             updatedAt: 1,
             templateId: "$isFav.templateId",
             pitch_type: 1,
+            template_title: 1,
             isFav: {
               $cond: {
                 if: {
