@@ -49,8 +49,32 @@ class PitchService {
         model: "gpt-3.5-turbo",
         messages: prompt,
         stream: true,
+        max_tokens: 300,
       });
       return { completion, success: true };
+    } catch (error) {
+      logger.error(`Error while openAI chat generation: ${error.message}`);
+      return { success: false };
+    }
+  };
+
+  textToSpeech = async (prompt) => {
+    try {
+      prompt.forEach((p) => {
+        if (p.date) delete p.date;
+        if (p._id) delete p._id;
+      });
+      const completion = await ai_client.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: prompt,
+        max_tokens: 300,
+      });
+      const mp3 = await ai_client.audio.speech.create({
+        model: "tts-1",
+        voice: "onyx",
+        input: completion,
+      });
+      return { mp3, success: true };
     } catch (error) {
       logger.error(`Error while openAI chat generation: ${error.message}`);
       return { success: false };
@@ -139,7 +163,7 @@ class PitchService {
 
   getAllPitch = async (user) => {
     try {
-      return await Pitch.find({ user_id: user?._id }).lean();
+      return await Pitch.find({ user_id: user?._id, type: "pitch" }).lean();
     } catch (error) {
       logger.error(`Error while getting all pitch: ${error}`);
     }

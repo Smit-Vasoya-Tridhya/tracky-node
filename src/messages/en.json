@@ -69,5 +69,8 @@
   "getTemplate": "Template fetch successfully.",
   "pitchNotFound": "Pitch not found.",
   "pitchFetch": "Pitch fetched successfully.",
-  "pitchUpdated": "Pitch name updated."
+  "pitchUpdated": "Pitch name updated.",
+  "convoCallNotFound": "Convo Call not found.",
+  "convoCallFetch": "Convo Call fetched successfully.",
+  "convoCallUpdated": "Convo Call name updated."
 }

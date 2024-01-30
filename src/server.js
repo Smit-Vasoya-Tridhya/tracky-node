@@ -105,3 +105,24 @@ server.listen(port, async () => {
   // await insertData();
   logger.info(`Server started at port:${port}`);
 });
+
+// app.get("/", async (req, res) => {
+//   try {
+//     const mp3 = await ai_client.audio.speech.create({
+//       model: "tts-1",
+//       voice: "onyx",
+//       input: "Today is a wonderful day to build something people love!",
+//     });
+//     console.log(speechFile);
+//     const buffer = Buffer.from(await mp3.arrayBuffer());
+//     res.writeHead(200, {
+//       Connection: "keep-alive",
+//       "Content-Type": "audio/mpeg",
+//       "Cache-Control": "no-cache",
+//     });
+//     res.write(buffer);
+//     res.end();
+//   } catch (error) {
+//     console.log(error);
+//   }
+// });

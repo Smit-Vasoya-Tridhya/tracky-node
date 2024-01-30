@@ -13,6 +13,7 @@ const pitchSchema = new mongoose.Schema(
         date: { type: Date, default: new Date() },
       },
     ],
+    type: { type: String, enum: ["pitch", "convo"], default: "pitch" },
   },
   { timestamps: true }
 );
