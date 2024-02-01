@@ -464,6 +464,25 @@ class AuthService {
       return false;
     }
   };
+
+  usernameCheck = async (payload) => {
+    try {
+      if (!payload?.user_name && payload.user_name === "")
+        return { username_exist: true };
+
+      const username_exist = await User.findOne({
+        user_name: payload.user_name,
+      })
+        .select("user_name")
+        .lean();
+
+      if (username_exist) return { username_exists: true };
+      return { username_exists: false };
+    } catch (error) {
+      logger.error("Error while checking the username check", error);
+      return false;
+    }
+  };
 }
 
 module.exports = AuthService;

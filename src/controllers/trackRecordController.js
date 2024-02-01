@@ -5,6 +5,7 @@ const trackService = new trackReacordervice();
 const sendResponse = require("../utils/sendResponse");
 const { returnMessage } = require("../utils/utils");
 const createCsvWriter = require("csv-writer").createObjectCsvWriter;
+const moment = require("moment");
 
 exports.trackCsv = catchAsyncError(async (req, res, next) => {
   try {
@@ -29,8 +30,19 @@ exports.trackCsv = catchAsyncError(async (req, res, next) => {
       header: data,
     });
 
+    const records = [
+      {
+        date: moment().format("DD/MM/YYYY"),
+        total_chat: 100,
+        total_calls: 100,
+        total_client: 30,
+        total_closed: 50,
+        total_lost: 20,
+      },
+    ];
+
     csvWriter
-      .writeRecords(data)
+      .writeRecords(records)
       .then(() => {
         res.download("data.csv", "data.csv", (err) => {
           if (!err) {

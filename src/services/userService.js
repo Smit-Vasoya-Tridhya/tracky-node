@@ -8,6 +8,7 @@ const {
   validateEmail,
   invitationEmailTemplate,
   paginationObject,
+  validateUserName,
 } = require("../utils/utils");
 const PaymentService = require("./paymentService");
 const paymentService = new PaymentService();
@@ -17,6 +18,7 @@ const TrackService = require("../services/trackRecordService");
 const trackService = new TrackService();
 const PaymentHistory = require("../models/paymentHistorySchema");
 const ReferralHistory = require("../models/referralHistorySchema");
+const FreeSubscriptionHistory = require("../models/freeSubscriptionHistorySchema");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const fs = require("fs");
 const sendEmail = require("../helpers/sendEmail");
@@ -37,12 +39,26 @@ class UserService {
         bound,
         last_name,
         first_name,
+        user_name,
       } = payload;
 
       let profileImageFileName, trackRecordCsvFileName;
       if (files["profile_image"]) {
         profileImageFileName = "uploads/" + files["profile_image"][0]?.filename;
       }
+
+      if (user_name && !user?.user_name) {
+        const username_exist = await User.findOne({
+          user_name: payload?.user_name,
+        })
+          .where("_id")
+          .ne(user?._id)
+          .lean();
+        if (username_exist) return returnMessage("usernameAlreadyExist");
+        if (validateUserName(user_name))
+          return returnMessage("invalidUsername");
+      }
+
       await User.findByIdAndUpdate(
         user._id,
         {
@@ -57,6 +73,7 @@ class UserService {
           time_zone,
           profile_image: profileImageFileName,
           bound,
+          user_name,
         },
         { new: true }
       );
@@ -193,6 +210,7 @@ class UserService {
 
   editProfile = async (payload, files, user) => {
     try {
+      const user_details = await User.findById(user?._id).lean();
       const {
         first_name,
         last_name,
@@ -217,6 +235,19 @@ class UserService {
         average_deal_size,
       };
 
+      if (payload?.user_name && !user_details?.user_name) {
+        const username_exist = await User.findOne({
+          user_name: payload?.user_name,
+        })
+          .where("_id")
+          .ne(user?._id)
+          .lean();
+        if (username_exist) return returnMessage("usernameAlreadyExist");
+        if (validateUserName(payload?.user_name))
+          return returnMessage("invalidUsername");
+        update_data.user_name = payload?.user_name;
+      }
+
       if (files?.fieldname === "profile_image") {
         update_data.profile_image = "uploads/" + files?.filename;
         if (fs.existsSync(`src/public/uploads/${user?.profile_image}`)) {
@@ -224,9 +255,10 @@ class UserService {
         }
       }
 
-      return await User.findByIdAndUpdate(user._id, update_data, {
+      await User.findByIdAndUpdate(user._id, update_data, {
         new: true,
       });
+      return;
     } catch (error) {
       logger.error("Error while updating profile", error);
       return error.message;
@@ -309,12 +341,22 @@ class UserService {
 
   referralStatus = async (user) => {
     try {
-      const successful_signup = await ReferralHistory.countDocuments({
-        referred_by: user?._id,
-        registered: true,
-        referral_code: user?.referral_code,
-      });
-      return { successful_signup };
+      const [successful_signup, used_free_subscription] = await Promise.all([
+        ReferralHistory.countDocuments({
+          referred_by: user?._id,
+          registered: true,
+          referral_code: user?.referral_code,
+        }).lean(),
+        FreeSubscriptionHistory.countDocuments({ user_id: user?._id }).lean(),
+      ]);
+      return {
+        successful_signup,
+        total_free_subscription: Math.floor(successful_signup % 10),
+        used_free_subscription,
+        available_free_subscription: Math.abs(
+          Math.floor(successful_signup % 10) - used_free_subscription
+        ),
+      };
     } catch (error) {
       logger.error(`Error while fetching referral status: ${error}`);
       return error.message;

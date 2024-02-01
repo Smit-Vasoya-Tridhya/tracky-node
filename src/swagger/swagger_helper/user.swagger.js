@@ -214,9 +214,9 @@ const profile = {
         schema: {
           type: "object",
           properties: {
-            profile_name: {
+            user_name: {
               type: "string",
-              descripition: "Enter your profile name",
+              descripition: "Enter your user name",
               required: true,
             },
             bio: {
@@ -329,6 +329,10 @@ const editProfile = {
             time_zone: {
               type: "fistringe",
               descripition: "Enter your time zone",
+            },
+            user_name: {
+              type: "string",
+              descripition: "provide the username of the user.",
             },
           },
         },
@@ -669,6 +673,41 @@ const updateStatus = {
     },
   },
 };
+
+const usernameCheck = {
+  tags: ["Users"],
+  description: "Check for Unique username",
+  summary: "find unique user name",
+  requestBody: {
+    content: {
+      "application/json": {
+        schema: {
+          type: "object",
+          properties: {
+            user_name: {
+              type: "string",
+              descripition: "Enter username.",
+              required: true,
+            },
+          },
+        },
+      },
+    },
+  },
+
+  responses: {
+    200: {
+      descripition: "ok",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+          },
+        },
+      },
+    },
+  },
+};
 const usersRoutes = {
   "/api/v1/user/login": {
     post: login,
@@ -714,6 +753,9 @@ const usersRoutes = {
   },
   "/api/v1/user": {
     delete: deleteProfile,
+  },
+  "/api/v1/user/username-check": {
+    post: usernameCheck,
   },
 };
 

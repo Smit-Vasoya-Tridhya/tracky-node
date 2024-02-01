@@ -23,6 +23,7 @@ const {
   userView,
   userStatusUpdate,
   userdelete,
+  usernameCheck,
 } = require("../controllers/userController");
 const { upload } = require("../helpers/multer");
 const { Adminprotect } = require("../middlewares/adminMiddleware");
@@ -62,5 +63,6 @@ userRoute.post("/verify-2FA", verify_2FA_otp);
 // this route is used for the referral programme
 userRoute.post("/invitation", sendInvitation);
 userRoute.get("/referral-status", referralStatus);
+userRoute.post("/username-check", usernameCheck);
 
 module.exports = userRoute;

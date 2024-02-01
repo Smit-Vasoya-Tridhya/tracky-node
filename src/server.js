@@ -17,6 +17,7 @@ const server = http.createServer(app);
 socket_connection(server);
 const PaymentHistory = require("./models/paymentHistorySchema");
 const ReferralHistory = require("./models/referralHistorySchema");
+const FreeSubscriptionHistory = require("./models/freeSubscriptionHistorySchema");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const moment = require("moment");
 const cron = require("node-cron");
@@ -38,13 +39,12 @@ cron.schedule("5 0 */1 * *", async () => {
     const referrals = await ReferralHistory.distinct("referred_by", {
       registered: true,
     });
-    console.log(referrals, 41);
     referrals.forEach(async (referral) => {
       const total_referral = await ReferralHistory.countDocuments({
         referred_by: referral?.referred_by,
         registered: true,
       });
-      if (total_referral !== 10) return;
+      if (total_referral < 10) return;
 
       const payment_history = await PaymentHistory.findOne({
         user_id: referral?.referred_by,
@@ -79,10 +79,16 @@ cron.schedule("5 0 */1 * *", async () => {
           }
         );
 
+        await FreeSubscriptionHistory.create({
+          user_id: payment_history?.user_id?._id,
+          subscription_id: payment_history?.user_id?.subscription_id,
+          plan_id: payment_history?.plan_id,
+        });
+
         await User.findByIdAndUpdate(payment_history?.user_id?._id, {
           last_reward_date: moment().format(),
         });
-        console.log(referral?._id);
+        return;
       }
     });
   } catch (error) {

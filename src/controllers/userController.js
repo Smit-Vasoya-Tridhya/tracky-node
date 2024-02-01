@@ -207,3 +207,11 @@ exports.userdelete = catchAsyncError(async (req, res, next) => {
 
   sendResponse(res, true, returnMessage("userdeleted"), userdelete, 200);
 });
+
+// tjis will check entered username is unique or not
+exports.usernameCheck = catchAsyncError(async (req, res, next) => {
+  const usernameCheck = await authService.usernameCheck(req.body);
+  if (typeof usernameCheck === "string")
+    return next(new AppError(usernameCheck, 400));
+  sendResponse(res, true, returnMessage(""), usernameCheck, 200);
+});

@@ -441,3 +441,9 @@ exports.forgetPasswordAdminEmailTemplate = (verifyUrl) => {
   </html>`;
   return htmlData;
 };
+
+exports.validateUserName = (username) => {
+  const regex = /^[a-z][a-z0-9_-]{2,14}$/;
+  if (!username) return false;
+  return regex.test(username);
+};

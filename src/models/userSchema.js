@@ -113,5 +113,6 @@ const User = mongoose.model("User", userSchema);
 
 userSchema.index({ referral_code: 1 });
 userSchema.index({ email: 1 });
+userSchema.index({ user_name: 1 });
 
 module.exports = User;
