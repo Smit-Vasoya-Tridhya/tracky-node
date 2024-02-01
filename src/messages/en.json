@@ -1,6 +1,7 @@
 {
   "userExists": "User already exist.",
-  "userRegisterd": "Onboarding process completed.",
+  "userRegisterd": "User registered successfully.",
+  "onboardingCompleted": "Onboarding process completed.",
   "default": "Something went wrong.",
   "userLogin": "User login successfuly.",
   "incorrectEmailPassword": "Incorrect password.",

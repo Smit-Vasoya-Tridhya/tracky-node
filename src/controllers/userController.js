@@ -75,7 +75,13 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
   if (typeof updateProfile === "string")
     return next(new AppError(updateProfile, 400));
 
-  sendResponse(res, true, returnMessage("userRegisterd"), updateProfile, 200);
+  sendResponse(
+    res,
+    true,
+    returnMessage("onboardingCompleted"),
+    updateProfile,
+    200
+  );
 });
 
 exports.deleteProfile = catchAsyncError(async (req, res, next) => {
