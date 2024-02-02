@@ -25,7 +25,7 @@ class AdminService {
       }
       const { first_name, last_name, password } = payload;
 
-      if (password) {
+      if (password && password !== "") {
         const hashedPassword = await bcrypt.hash(password, 10);
         return await Admin.findByIdAndUpdate(
           user._id,
