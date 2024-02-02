@@ -5,6 +5,7 @@ const User = require("../models/userSchema");
 const PaymentHistory = require("../models/paymentHistorySchema");
 const logger = require("../logger");
 const { eventEmitter } = require("../socket");
+const moment = require("moment");
 class PaymentService {
   createPlan = async (payload) => {
     try {
@@ -154,6 +155,16 @@ class PaymentService {
             "user_id.email": { $regex: payload.search, $options: "i" },
           },
         ];
+      }
+
+      if (payload?.startDate && payload?.endDate) {
+        const startDate = moment(payload?.startDate, "YYYY-MM-DD").startOf(
+          "day"
+        );
+        const endDate = moment(payload?.endDate, "YYYY-MM-DD").endOf("day");
+        queryObj["createdAt"] = {
+          $and: [{ $gte: startDate }, { $lte: endDate }],
+        };
       }
       const aggregate_arr = [
         {
