@@ -55,7 +55,7 @@ class UserService {
           .ne(user?._id)
           .lean();
         if (username_exist) return returnMessage("usernameAlreadyExist");
-        if (validateUserName(user_name))
+        if (!validateUserName(user_name))
           return returnMessage("invalidUsername");
       }
 
@@ -243,7 +243,7 @@ class UserService {
           .ne(user?._id)
           .lean();
         if (username_exist) return returnMessage("usernameAlreadyExist");
-        if (validateUserName(payload?.user_name))
+        if (!validateUserName(payload?.user_name))
           return returnMessage("invalidUsername");
         update_data.user_name = payload?.user_name;
       }
