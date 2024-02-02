@@ -110,6 +110,7 @@ class AuthService {
       }).select("+password");
       if (!user) return returnMessage("userNotFound");
       if (!user.email_verified) return returnMessage("emailNotVerified");
+      if (user?.status !== "Active") return returnMessage("inactiveAccount");
 
       if (!user) return returnMessage("incorrectLogin");
 

@@ -17,6 +17,7 @@ const server = http.createServer(app);
 socket_connection(server);
 const PaymentHistory = require("./models/paymentHistorySchema");
 const ReferralHistory = require("./models/referralHistorySchema");
+const User = require("./models/userSchema");
 const FreeSubscriptionHistory = require("./models/freeSubscriptionHistorySchema");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const moment = require("moment");
@@ -102,8 +103,6 @@ cron.schedule("5 0 */1 * *", async () => {
 app.use(errorHandler);
 
 const swaggerDoc = require("./swagger/swagger.index");
-
-const User = require("./models/userSchema");
 
 app.use("/swagger-doc", swagger.serve);
 app.use("/swagger-doc", swagger.setup(swaggerDoc));

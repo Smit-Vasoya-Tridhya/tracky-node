@@ -17,7 +17,10 @@ exports.protect = catchAsyncErrors(async (req, res, next) => {
       .equals(false)
       .select("-password")
       .lean();
-    if (!user) return next(new ErrorHandler("User Not Found!", 404));
+    if (!user) return next(new ErrorHandler("User Not Found!", 401));
+    if (user?.status !== "Active")
+      return next(new ErrorHandler("You are not Authorised!", 401));
+
     req.user = user;
     next();
   } else {
