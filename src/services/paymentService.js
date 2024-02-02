@@ -61,7 +61,7 @@ class PaymentService {
   checkoutSession = async (payload, user) => {
     try {
       const user_details = await User.findById(user?._id).lean();
-      if (user_details.on_board) return "alreadyOnboard";
+      if (user_details.on_board) return returnMessage("alreadyOnboard");
 
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
