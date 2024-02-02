@@ -158,13 +158,15 @@ class PaymentService {
       }
 
       if (payload?.startDate && payload?.endDate) {
-        const startDate = moment(payload?.startDate, "YYYY-MM-DD").startOf(
-          "day"
-        );
-        const endDate = moment(payload?.endDate, "YYYY-MM-DD").endOf("day");
+        const startDate = moment(payload?.startDate, "YYYY-MM-DD")
+          .startOf("day")
+          .format();
+        const endDate = moment(payload?.endDate, "YYYY-MM-DD")
+          .endOf("day")
+          .format();
         queryObj["$and"] = [
-          { createdAt: { $gte: startDate } },
-          { createdAt: { $lte: endDate } },
+          { createdAt: { $gte: new Date(startDate) } },
+          { createdAt: { $lte: new Date(endDate) } },
         ];
       }
       const aggregate_arr = [

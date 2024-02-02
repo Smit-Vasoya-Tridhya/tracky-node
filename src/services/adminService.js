@@ -37,7 +37,10 @@ class AdminService {
           { new: true }
         );
       } else {
-        return await Admin.findByIdAndUpdate(id, { first_name, last_name });
+        return await Admin.findByIdAndUpdate(user._id, {
+          first_name,
+          last_name,
+        });
       }
     } catch (error) {
       logger.error("Error while update admin", error);
