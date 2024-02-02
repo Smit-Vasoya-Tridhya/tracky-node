@@ -162,9 +162,10 @@ class PaymentService {
           "day"
         );
         const endDate = moment(payload?.endDate, "YYYY-MM-DD").endOf("day");
-        queryObj["createdAt"] = {
-          $and: [{ $gte: startDate }, { $lte: endDate }],
-        };
+        queryObj["$and"] = [
+          { createdAt: { $gte: startDate } },
+          { createdAt: { $lte: endDate } },
+        ];
       }
       const aggregate_arr = [
         {
