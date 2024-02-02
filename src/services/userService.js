@@ -103,8 +103,8 @@ class UserService {
             logger.info("Skipping row with empty column");
             return;
           }
-          const currentDate = moment().format("MM-DD-YYYY");
-          const csvDate = moment(columns[0], "MM-DD-YYYY");
+          const currentDate = moment().format("DD/MM/YYYY");
+          const csvDate = moment(columns[0], "DD/MM/YYYY");
 
           if (csvDate.isAfter(currentDate)) {
             logger.info("Skipping row with future date");
@@ -138,7 +138,7 @@ class UserService {
         await Track.deleteMany({ user_id: user._id });
         await Track.insertMany(data);
       }
-
+      if (user?.on_board) return returnMessage("alreadyOnboard");
       const checkoutLink = await paymentService.checkoutSession(
         {
           plan_id: payload?.plan_id,
