@@ -351,10 +351,10 @@ class UserService {
       ]);
       return {
         successful_signup,
-        total_free_subscription: Math.floor(successful_signup % 10),
+        total_free_subscription: Math.floor(successful_signup / 10),
         used_free_subscription,
         available_free_subscription: Math.abs(
-          Math.floor(successful_signup % 10) - used_free_subscription
+          Math.floor(successful_signup / 10) - used_free_subscription
         ),
       };
     } catch (error) {
