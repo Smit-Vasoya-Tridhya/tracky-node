@@ -1,7 +1,9 @@
 const catchAsyncError = require("../helpers/catchAsyncError");
 const AppError = require("./../helpers/errorHandler");
 const PitchService = require("../services/pitchService");
+const ConvoCraftService = require("../services/convoCarftService");
 const pitchService = new PitchService();
+const convoCraftService = new ConvoCraftService();
 const Pitch = require("../models/pitchGeneratorSchema");
 const sendResponse = require("../utils/sendResponse");
 const { returnMessage } = require("../utils/utils");
@@ -82,4 +84,51 @@ exports.getAllPitch = catchAsyncError(async (req, res, next) => {
   const pitches = await pitchService.getAllPitch(req.user);
   if (typeof pitches === "string") return next(new AppError(pitches, 400));
   sendResponse(res, true, undefined, pitches, 200);
+});
+
+// From here there will be convocraft api controller
+exports.convoCraftCall = catchAsyncError(async (req, res, next) => {
+  const convo_craft = await convoCraftService.createConvoCall(
+    req.body,
+    req.user
+  );
+
+  if (typeof convo_craft === "string")
+    return next(new AppError(convo_craft, 400));
+
+  const buffer = Buffer.from(await convo_craft?.openai_audio?.arrayBuffer());
+  res.writeHead(200, {
+    Connection: "keep-alive",
+    "Content-Type": "audio/mpeg",
+    "Cache-Control": "no-cache",
+  });
+  res.write(buffer);
+  res.end();
+});
+
+exports.continueCraftCall = catchAsyncError(async (req, res, next) => {
+  const convo_craft = await convoCraftService.continueConvoCall(
+    req.params.id,
+    req.body,
+    req.user
+  );
+
+  if (typeof convo_craft === "string")
+    return next(new AppError(convo_craft, 400));
+
+  const buffer = Buffer.from(await convo_craft?.openai_audio?.arrayBuffer());
+  res.writeHead(200, {
+    Connection: "keep-alive",
+    "Content-Type": "audio/mpeg",
+    "Cache-Control": "no-cache",
+  });
+  res.write(buffer);
+  res.end();
+});
+
+exports.getAllConvoCalls = catchAsyncError(async (req, res, next) => {
+  const convo_calls = await convoCraftService.getAllConvoCall(req.user);
+  if (typeof convo_calls === "string")
+    return next(new AppError(convo_calls, 400));
+  sendResponse(res, true, undefined, convo_calls, 200);
 });

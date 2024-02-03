@@ -9,4 +9,9 @@ pitchRoute.get("/get-pitch/:pitchId", pitchController.getPitch);
 pitchRoute.get("/", pitchController.getAllPitch);
 pitchRoute.patch("/update/:pitchId", pitchController.updatePitch);
 
+// convo call routes
+pitchRoute.post("/new-call", pitchController.convoCraftCall);
+pitchRoute.post("/continue-call/:callId", pitchController.continueCraftCall);
+pitchRoute.get("/calls", pitchController.getAllConvoCalls);
+
 module.exports = pitchRoute;
