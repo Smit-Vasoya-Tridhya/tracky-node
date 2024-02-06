@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const pitchSchema = new mongoose.Schema(
   {
     user_id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    user_prompt: { type: String, required: true },
+    user_prompt: { type: String },
     selected_role: { type: String, enum: ["gatekeeper", "persona"] },
     name: { type: String, default: "New chat" },
     history: [

@@ -72,7 +72,7 @@ class PitchService {
       const mp3 = await ai_client.audio.speech.create({
         model: "tts-1",
         voice: "onyx",
-        input: completion,
+        input: completion?.choices[0]?.message?.content,
       });
       return { mp3, success: true };
     } catch (error) {
