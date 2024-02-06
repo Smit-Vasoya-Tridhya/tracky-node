@@ -1,10 +1,11 @@
 const Pitch = require("../models/pitchGeneratorSchema");
 const logger = require("../logger");
 const PitchService = require("./pitchService");
+const { returnMessage } = require("../utils/utils");
 const pitchService = new PitchService();
 
 class ConvoCraftService {
-  promptMaker = (payload) => {
+  promptMaker = (payload, name) => {
     try {
       const system_role = {
         role: "system",
@@ -25,7 +26,7 @@ class ConvoCraftService {
           } Question: ${question} \n\t Answer: ${answer} \n`;
         }
       });
-      const prompt = `Generate a concise and impactful sales pitch by incorporating the provided questions and answers seamlessly. Craft the speech in a well-structured format, avoiding question-based responses. Begin with an engaging introduction using placeholders like ‘Hey, it’s ,’ and ensure the pitch is both concise and highly persuasive. Strive for a short but powerful presentation that leaves a lasting impression.
+      const prompt = `My name is ${name}. Generate a concise and impactful sales pitch by incorporating the provided questions and answers seamlessly. Craft the speech in a well-structured format, avoiding question-based responses. Begin with an engaging introduction using placeholders like ‘Hey, it’s ,’ and ensure the pitch is both concise and highly persuasive. Strive for a short but powerful presentation that leaves a lasting impression.
       ${template_questions}`;
 
       return [system_role, { role: "user", content: prompt }];
@@ -37,7 +38,8 @@ class ConvoCraftService {
 
   createConvoCall = async (payload, user) => {
     try {
-      const prompt = this.promptMaker(payload);
+      const name = user?.user_name || user?.first_name + " " + user?.last_name;
+      const prompt = this.promptMaker(payload, name);
       if (!prompt) return returnMessage("default");
 
       const openai_audio = await pitchService.textToSpeech(prompt);
@@ -56,7 +58,7 @@ class ConvoCraftService {
         openai_audio: openai_audio?.mp3,
       };
     } catch (error) {
-      logger.error(`Error while making new pitch: ${error.message}`);
+      logger.error(`Error while making new convo call: ${error}`);
       return error.message;
     }
   };
@@ -96,13 +98,17 @@ class ConvoCraftService {
     }
   };
 
-  deleteConvoCall = async (user) => {
-    try {
-      return await Pitch.find({ user_id: user?._id, type: "convo" }).lean();
-    } catch (error) {
-      logger.error(`Error while getting all convo call: ${error}`);
-    }
-  };
+  // redoConvoCall =  async (convo_call_id)=>{
+
+  // }
+
+  // deleteConvoCall = async (user) => {
+  //   try {
+  //     return await Pitch.find({ user_id: user?._id, type: "convo" }).lean();
+  //   } catch (error) {
+  //     logger.error(`Error while getting all convo call: ${error}`);
+  //   }
+  // };
 }
 
 module.exports = ConvoCraftService;
