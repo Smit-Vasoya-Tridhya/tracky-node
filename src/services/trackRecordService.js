@@ -387,8 +387,23 @@ class TrackRecordService {
 
       if (daysAgo) {
         const generateEmptyDailyData = (daysCount) => {
+          const months = [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+          ];
+
           const currentDay = moment().date();
-          const currentMonth = moment().month() + 1;
+          const currentMonthIndex = moment().month();
           const currentYear = moment().year();
 
           return Array.from({ length: daysCount }, (_, index) => {
@@ -396,7 +411,7 @@ class TrackRecordService {
 
             return {
               day: date.date(),
-              month: date.month() + 1,
+              month: months[date.month()], // Use month abbreviation from 'months' array
               year: date.year(),
               totalClose: 0,
               totalCalls: 0,
@@ -412,12 +427,12 @@ class TrackRecordService {
           ...monthlyData.find(
             (data) =>
               data.day === emptyDay.day &&
-              // data.month === emptyDay.month &&
+              data.month === emptyDay.month && // Ensure month matches
               data.year === emptyDay.year
           ),
         }));
-        const currentsYears = moment().year();
-        return { mergedData, currentsYears };
+        const currentYear = moment().year();
+        return { mergedData, currentYear };
       }
     } catch (error) {
       logger.error("Error while fetching track record monthly data", error);
