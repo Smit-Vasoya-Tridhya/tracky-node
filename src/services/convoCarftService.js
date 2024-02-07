@@ -66,7 +66,7 @@ class ConvoCraftService {
   continueConvoCall = async (convo_call_id, payload, user) => {
     try {
       const convo_call = await Pitch.findOne({
-        _id: pitch_id,
+        _id: convo_call_id,
         user_id: user?._id,
         type: "convo",
       }).lean();
