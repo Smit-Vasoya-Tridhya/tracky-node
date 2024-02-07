@@ -107,7 +107,7 @@ exports.convoCraftCall = catchAsyncError(async (req, res, next) => {
 
 exports.continueCraftCall = catchAsyncError(async (req, res, next) => {
   const convo_craft = await convoCraftService.continueConvoCall(
-    req.params.id,
+    req.params.callId,
     req.body,
     req.user
   );
