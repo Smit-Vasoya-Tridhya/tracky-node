@@ -67,14 +67,14 @@ class PitchService {
       const completion = await ai_client.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: prompt,
-        max_tokens: 300,
+        max_tokens: 100,
       });
       const mp3 = await ai_client.audio.speech.create({
         model: "tts-1",
         voice: "onyx",
         input: completion?.choices[0]?.message?.content,
       });
-      return { mp3, success: true };
+      return { mp3, success: true, completion };
     } catch (error) {
       logger.error(`Error while openAI chat generation: ${error.message}`);
       return { success: false };
