@@ -24,6 +24,7 @@ const {
   userStatusUpdate,
   userdelete,
   usernameCheck,
+  settingProfile,
 } = require("../controllers/userController");
 const { upload } = require("../helpers/multer");
 const { Adminprotect } = require("../middlewares/adminMiddleware");
@@ -55,6 +56,7 @@ userRoute.put(
 userRoute.get("/fetchProfile", getProfilebyId);
 userRoute.put("/editProfile", upload.single("profile_image"), editProfile);
 userRoute.delete("/", deleteProfile);
+userRoute.put('/settings', settingProfile)
 
 // this routes are used for the google authenticator and change password and email
 userRoute.get("/qrGenerate", generateQr);
@@ -64,5 +66,7 @@ userRoute.post("/verify-2FA", verify_2FA_otp);
 userRoute.post("/invitation", sendInvitation);
 userRoute.get("/referral-status", referralStatus);
 userRoute.post("/username-check", usernameCheck);
+
+
 
 module.exports = userRoute;

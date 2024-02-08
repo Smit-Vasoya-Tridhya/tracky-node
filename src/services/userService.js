@@ -40,6 +40,7 @@ class UserService {
         last_name,
         first_name,
         user_name,
+        user_settings
       } = payload;
 
       let profileImageFileName, trackRecordCsvFileName;
@@ -74,6 +75,7 @@ class UserService {
           profile_image: profileImageFileName,
           bound,
           user_name,
+          user_settings
         },
         { new: true }
       );
@@ -221,8 +223,9 @@ class UserService {
         bound,
         time_zone,
         average_deal_size,
+        user_settings
       } = payload;
-
+      
       const update_data = {
         first_name,
         last_name,
@@ -233,6 +236,7 @@ class UserService {
         bound,
         time_zone,
         average_deal_size,
+        user_settings
       };
 
       if (payload?.user_name && !user_details?.user_name) {
