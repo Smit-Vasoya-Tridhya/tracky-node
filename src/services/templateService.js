@@ -28,7 +28,7 @@ class TemplateService {
       } = payload;
       let result;
 
-      for (const { key, value } of updates) {
+      for (const { key, value, level } of updates) {
         const templateDoc = await Template.findOne({ _id: id.id });
 
         if (
@@ -39,7 +39,7 @@ class TemplateService {
           if (!templateDoc?.template) {
             result = await Template.insertOne({
               _id: id.id,
-              template: [{ key, value }],
+              template: [{ key, value, level }],
               template_type,
               template_title,
               template_discription,
@@ -50,7 +50,7 @@ class TemplateService {
             result = await Template.findOneAndUpdate(
               { _id: id.id },
               {
-                $addToSet: { template: { key, value } },
+                $addToSet: { template: { key, value, level } },
                 $set: {
                   template_type,
                   template_title,
@@ -66,7 +66,7 @@ class TemplateService {
           result = await Template.findOneAndUpdate(
             { _id: id.id, "template.key": key },
             {
-              $set: { "template.$.value": value },
+              $set: { "template.$.value": value, "template.$.level": level },
               template_type,
               template_title,
               template_discription,
@@ -100,6 +100,12 @@ class TemplateService {
           },
           {
             company_type: {
+              $regex: searchObj.search.toLowerCase(),
+              $options: "i",
+            },
+          },
+          {
+            template_title: {
               $regex: searchObj.search.toLowerCase(),
               $options: "i",
             },
@@ -238,6 +244,12 @@ class TemplateService {
           },
           {
             company_type: {
+              $regex: searchObj.search.toLowerCase(),
+              $options: "i",
+            },
+          },
+          {
+            template_title: {
               $regex: searchObj.search.toLowerCase(),
               $options: "i",
             },
