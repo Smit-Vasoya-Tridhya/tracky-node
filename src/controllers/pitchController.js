@@ -17,7 +17,7 @@ exports.pitchGenerator = catchAsyncError(async (req, res, next) => {
     Connection: "keep-alive",
     "Content-Type": "text/event-stream",
     "Cache-Control": "no-cache",
-    "Content-Length": Buffer.byteLength(pitch, "utf-8"),
+    "Content-Length": Buffer.byteLength(JSON.stringify(pitch), "utf-8"),
   });
 
   let content = "";
@@ -46,7 +46,7 @@ exports.continuePitch = catchAsyncError(async (req, res, next) => {
     Connection: "keep-alive",
     "Content-Type": "text/event-stream",
     "Cache-Control": "no-cache",
-    "Content-Length": Buffer.byteLength(pitch, "utf-8"),
+    "Content-Length": Buffer.byteLength(JSON.stringify(pitch), "utf-8"),
   });
 
   let content = "";
