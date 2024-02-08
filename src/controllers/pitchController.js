@@ -17,6 +17,7 @@ exports.pitchGenerator = catchAsyncError(async (req, res, next) => {
     Connection: "keep-alive",
     "Content-Type": "text/event-stream",
     "Cache-Control": "no-cache",
+    "Content-Length": Buffer.byteLength(pitch, "utf-8"),
   });
 
   let content = "";
@@ -45,6 +46,7 @@ exports.continuePitch = catchAsyncError(async (req, res, next) => {
     Connection: "keep-alive",
     "Content-Type": "text/event-stream",
     "Cache-Control": "no-cache",
+    "Content-Length": Buffer.byteLength(pitch, "utf-8"),
   });
 
   let content = "";
@@ -100,6 +102,7 @@ exports.convoCraftCall = catchAsyncError(async (req, res, next) => {
     Connection: "keep-alive",
     "Content-Type": "audio/mpeg",
     "Cache-Control": "no-cache",
+    "Content-Length": Buffer.byteLength(buffer, "utf-8"),
   });
   res.write(buffer);
   res.end();
@@ -120,6 +123,7 @@ exports.continueCraftCall = catchAsyncError(async (req, res, next) => {
     Connection: "keep-alive",
     "Content-Type": "audio/mpeg",
     "Cache-Control": "no-cache",
+    "Content-Length": Buffer.byteLength(buffer, "utf-8"),
   });
   res.write(buffer);
   res.end();

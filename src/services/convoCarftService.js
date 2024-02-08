@@ -44,7 +44,10 @@ class ConvoCraftService {
 
       const openai_audio = await pitchService.textToSpeech(prompt);
       if (!openai_audio?.success) return returnMessage("default");
-
+      prompt.push({
+        role: "assistant",
+        content: openai_audio?.completion?.choices[0]?.message?.content,
+      });
       await Pitch.create({
         _id: payload?._id,
         user_id: user?._id,
@@ -76,13 +79,17 @@ class ConvoCraftService {
 
       history.push({ role: "user", content: payload?.user_prompt });
 
+      const openai_audio = await pitchService.textToSpeech(history);
+      if (!openai_audio?.success) return returnMessage("default");
+
+      history.push({
+        role: "assistant",
+        content: openai_audio?.completion?.choices[0]?.message?.content,
+      });
       await Pitch.findByIdAndUpdate(convo_call_id, { history }, { new: true });
 
-      const openai_chat = await pitchService.textToSpeech(history);
-      if (!openai_chat?.success) return returnMessage("default");
-
       return {
-        openai_chat: openai_chat?.mp3,
+        openai_audio: openai_audio?.mp3,
       };
     } catch (error) {
       logger.error(`Error while continuing convo: ${error}`);
