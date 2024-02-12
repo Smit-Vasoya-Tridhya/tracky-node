@@ -6,6 +6,7 @@ const PaymentHistory = require("../models/paymentHistorySchema");
 const logger = require("../logger");
 const { eventEmitter } = require("../socket");
 const moment = require("moment");
+const Invoice = require("../models/invoiceSchema");
 class PaymentService {
   createPlan = async (payload) => {
     try {
@@ -76,6 +77,14 @@ class PaymentService {
           user_id: user?._id?.toString(),
           plan_id: payload?.plan_id,
         },
+        subscription_data: {
+          trial_settings: {
+            end_behavior: {
+              missing_payment_method: "cancel",
+            },
+          },
+          trial_period_days: 1,
+        },
       });
       await User.findByIdAndUpdate(user._id, { last_session: session?.id });
       return { checkout_url: session?.url };
@@ -99,7 +108,8 @@ class PaymentService {
         header,
         secret
       );
-      logger.info("Events Type", event.type);
+      logger.info("Events..", event.type);
+
       if (event.type === "checkout.session.completed") {
         const data = payload?.data?.object;
         const user = await User.findById(data?.metadata?.user_id).lean();
@@ -127,16 +137,53 @@ class PaymentService {
           ),
           PaymentHistory.create(paymentObj),
           User.findByIdAndUpdate(data?.metadata?.user_id, {
+            subscription_id: data?.subscription,
             plan_purchased_type: plan?.interval,
             plan_purchased: true,
             on_board: true,
           }),
         ]);
+
+        const invoicetObj = {
+          session_id: data?.id,
+          invoice_id: data?.invoice,
+          plan_id: data?.metadata?.plan_id,
+          user_id: data?.metadata?.user_id,
+          interval: plan?.interval,
+          subscription_id: data?.subscription,
+          amount: data?.amount_total / 100,
+        };
+
+        const createdInvoice = await Invoice.create(invoicetObj);
+        console.log("createdInvoice.......", createdInvoice);
+
         eventEmitter(
           "PAYMENT_SUCCESS",
           { data: "Payment done successFully" },
           data?.metadata?.user_id
         );
+      } else if (event.type === "invoice.created") {
+        console.log("invoice.created......", event.type);
+
+        const data = payload?.data?.object;
+
+        console.log("data.................", data.id);
+
+        const details = await Invoice.findOne({
+          invoice_id: data.id,
+        }).lean();
+        console.log("details.......", details);
+
+        // const details = await stripe.subscriptions.retrieve(
+        //   data.subscription
+        // );
+        // console.log('details...........', details);
+
+        if (!details || details === null) {
+          return false;
+        } else {
+          return false;
+        }
       }
       return true;
     } catch (error) {
