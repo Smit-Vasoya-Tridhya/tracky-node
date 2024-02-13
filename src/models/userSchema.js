@@ -101,6 +101,28 @@ const userSchema = new mongoose.Schema(
     authenticator_secret: {
       type: Object,
     },
+    user_settings: {
+      profile: {
+        type: Boolean,
+        default: false,
+      },
+      profit: {
+        type: Boolean,
+        default: false,
+      },
+      track_record: {
+        type: Boolean,
+        default: false,
+      },
+      earnings: {
+        type: Boolean,
+        default: false,
+      },
+      past_clients: {
+        type: Boolean,
+        default: false,
+      },
+    },
     referral_code: {
       type: String,
     },

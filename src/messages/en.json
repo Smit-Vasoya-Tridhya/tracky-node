@@ -77,5 +77,6 @@
   "alreadyOnboard": "You are already onboard!",
   "usernameAlreadyExist": "Username is alrealy taken. please choose another one.",
   "invalidUsername": "Username should contain lower alphabets, numbers, undescore and dashes.",
-  "inactiveAccount": "Your account has been suspended."
+  "inactiveAccount": "Your account has been suspended.",
+  "settingsUpdate": "Settings updated successfully."
 }

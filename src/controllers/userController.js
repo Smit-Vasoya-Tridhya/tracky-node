@@ -135,6 +135,19 @@ exports.editProfile = catchAsyncError(async (req, res, next) => {
   sendResponse(res, true, returnMessage("updateProfile"), editProfile, 200);
 });
 
+exports.settingProfile = catchAsyncError(async (req, res, next) => {
+  const editSettings = await userService.editProfile(
+    req.body,
+    req.file,
+    req.user
+  );
+
+  if (typeof editSettings === "string")
+    return next(new AppError(editSettings, 400));
+
+  sendResponse(res, true, returnMessage('settingsUpdate'), editSettings, 200);
+});
+
 exports.sendInvitation = catchAsyncError(async (req, res, next) => {
   const sendInvitation = await userService.sendInvitation(req.body, req.user);
   if (typeof sendInvitation === "string")
