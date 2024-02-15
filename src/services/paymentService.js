@@ -62,6 +62,8 @@ class PaymentService {
 
   checkoutSession = async (payload, user) => {
     try {
+      const thirtyMinutesInDays = Math.ceil(30 / (24 * 60)); // Convert 30 minutes to days and round up
+
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
         line_items: [
@@ -111,6 +113,7 @@ class PaymentService {
       logger.info("Events..", event.type);
 
       if (event.type === "checkout.session.completed") {
+        console.log("checkout event start............");
         const data = payload?.data?.object;
         const user = await User.findById(data?.metadata?.user_id).lean();
 
@@ -156,33 +159,44 @@ class PaymentService {
 
         const createdInvoice = await Invoice.create(invoicetObj);
         console.log("createdInvoice.......", createdInvoice);
-
+        console.log("checkout session event end..........");
         eventEmitter(
           "PAYMENT_SUCCESS",
           { data: "Payment done successFully" },
           data?.metadata?.user_id
         );
-      } else if (event.type === "invoice.created") {
-        console.log("invoice.created......", event.type);
+      }
+      if (event.type === "invoice.created") {
+        console.log("invoice.created event start.....", event.type);
 
         const data = payload?.data?.object;
+        console.log("data.................", data);
 
-        console.log("data.................", data.id);
-
-        const details = await Invoice.findOne({
-          invoice_id: data.id,
+        const fetchedInvoice = await Invoice.findOne({
+          subscription_id: data.subscription,
         }).lean();
-        console.log("details.......", details);
+        console.log("fetchedInvoice.......", fetchedInvoice);
 
-        // const details = await stripe.subscriptions.retrieve(
-        //   data.subscription
-        // );
-        // console.log('details...........', details);
-
-        if (!details || details === null) {
-          return false;
+        if (!fetchedInvoice || fetchedInvoice === null) {
+          return true;
         } else {
-          return false;
+          const fetchSubcription = await stripe.subscriptions.retrieve(
+            fetchedInvoice.subscription_id
+          );
+          console.log("fetchSubcription........", fetchSubcription);
+          const invoicetObj = {
+            session_id: fetchedInvoice?.session_id,
+            invoice_id: data?.id,
+            plan_id: fetchSubcription?.plan?.id,
+            user_id: fetchedInvoice?.user_id,
+            interval: fetchSubcription.plan?.interval,
+            subscription_id: data?.subscription,
+            amount: data?.total / 100,
+          };
+          const createdInvoice = await Invoice.create(invoicetObj);
+          console.log("createdInvoice.......", createdInvoice);
+
+          return true;
         }
       }
       return true;
