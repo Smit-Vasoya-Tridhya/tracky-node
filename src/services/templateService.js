@@ -231,7 +231,7 @@ class TemplateService {
   templateListById = async (searchObj, params, user) => {
     try {
       const pagination = paginationObject(searchObj);
-      const queryObj = { is_deleted: false };
+      const queryObj = { is_deleted: false, template_type: "personal" };
 
       queryObj.user_id = new mongoose.Types.ObjectId(params.id);
       if (searchObj.search && searchObj.search !== "") {
@@ -359,7 +359,14 @@ class TemplateService {
         .skip(pagination.skip)
         .limit(pagination.resultPerPage);
 
-      return templateData;
+      const templatecounts = await Template.aggregate(aggregationPipeline);
+
+      return {
+        templateData,
+        pageCount:
+          Math.ceil(templatecounts.length / pagination.resultPerPage) || 0,
+      };
+      // return templateData;
     } catch (error) {
       logger.error("Error while updating template", error);
       return error.message;
