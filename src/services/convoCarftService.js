@@ -9,7 +9,7 @@ class ConvoCraftService {
     try {
       const system_role = {
         role: "system",
-        content: `Immerse yourself in the ${payload?.selected_role} of a skilled sales professional and deliver a compelling pitch. Stay in character throughout the interaction.`,
+        content: `Immerse yourself in the ${payload?.selected_role} of a skilled sales professional and deliver a compelling pitch. Stay in character throughout the interaction. please add a newline character (\n).`,
       };
       let template_questions = "";
       payload.template.forEach((temp, index) => {

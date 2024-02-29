@@ -40,7 +40,7 @@ class UserService {
         last_name,
         first_name,
         user_name,
-        user_settings
+        user_settings,
       } = payload;
 
       let profileImageFileName, trackRecordCsvFileName;
@@ -51,10 +51,8 @@ class UserService {
       if (user_name && !user?.user_name) {
         const username_exist = await User.findOne({
           user_name: payload?.user_name,
-        })
-          .where("_id")
-          .ne(user?._id)
-          .lean();
+          _id: { $ne: user?._id },
+        }).lean();
         if (username_exist) return returnMessage("usernameAlreadyExist");
         if (!validateUserName(user_name))
           return returnMessage("invalidUsername");
@@ -75,7 +73,7 @@ class UserService {
           profile_image: profileImageFileName,
           bound,
           user_name,
-          user_settings
+          user_settings,
         },
         { new: true }
       );
@@ -223,9 +221,9 @@ class UserService {
         bound,
         time_zone,
         average_deal_size,
-        user_settings
+        user_settings,
       } = payload;
-      
+
       const update_data = {
         first_name,
         last_name,
@@ -236,16 +234,14 @@ class UserService {
         bound,
         time_zone,
         average_deal_size,
-        user_settings
+        user_settings,
       };
 
       if (payload?.user_name && !user_details?.user_name) {
         const username_exist = await User.findOne({
           user_name: payload?.user_name,
-        })
-          .where("_id")
-          .ne(user?._id)
-          .lean();
+          _id: { $ne: user?._id },
+        }).lean();
         if (username_exist) return returnMessage("usernameAlreadyExist");
         if (!validateUserName(payload?.user_name))
           return returnMessage("invalidUsername");
