@@ -13,7 +13,7 @@ exports.trackCsv = catchAsyncError(async (req, res, next) => {
 
     let data = [
       { id: "date", title: "Date" },
-      { id: "total_chat", title: "Total Chat" },
+      { id: "total_chat", title: "Total Conversation" },
       { id: "total_calls", title: "Total Call" },
       { id: "total_client", title: "Total Client" },
       { id: "total_closed", title: "Total Closed" },

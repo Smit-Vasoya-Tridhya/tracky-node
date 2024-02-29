@@ -165,6 +165,7 @@ class PaymentService {
           { data: "Payment done successFully" },
           data?.metadata?.user_id
         );
+        return true;
       }
       if (event.type === "invoice.created") {
         console.log("invoice.created event start.....", event.type);
