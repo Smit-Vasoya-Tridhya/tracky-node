@@ -85,7 +85,7 @@ class PaymentService {
               missing_payment_method: "cancel",
             },
           },
-          trial_period_days: 1,
+          trial_period_days: 30,
         },
       });
       await User.findByIdAndUpdate(user._id, { last_session: session?.id });
