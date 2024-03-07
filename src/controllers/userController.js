@@ -72,6 +72,16 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
     req.user
   );
 
+  if (updateProfile?.on_board_complete) {
+    sendResponse(
+      res,
+      true,
+      returnMessage("alreadyOnboard"),
+      updateProfile,
+      200
+    );
+  }
+  
   if (typeof updateProfile === "string")
     return next(new AppError(updateProfile, 400));
 
