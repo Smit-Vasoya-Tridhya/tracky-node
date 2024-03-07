@@ -138,7 +138,7 @@ class UserService {
         await Track.deleteMany({ user_id: user._id });
         await Track.insertMany(data);
       }
-      if (user?.on_board) return returnMessage("alreadyOnboard");
+      if (user?.on_board) return { on_board_complete: true };
       const checkoutLink = await paymentService.checkoutSession(
         {
           plan_id: payload?.plan_id,
