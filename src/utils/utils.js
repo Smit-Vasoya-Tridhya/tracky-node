@@ -443,7 +443,7 @@ exports.forgetPasswordAdminEmailTemplate = (verifyUrl) => {
 };
 
 exports.validateUserName = (username) => {
-  const regex = /^[a-z][a-z0-9_-]{2,14}$/;
+  const regex = /^[A-Z][a-z][a-zA-Z0-9_-]{2,14}$/;
   if (!username) return false;
   return regex.test(username);
 };
