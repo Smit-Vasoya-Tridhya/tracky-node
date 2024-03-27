@@ -385,11 +385,11 @@ class AuthService {
   reset_email_password = async (payload, user) => {
     try {
       const { email, old_password, new_password } = payload;
-      const email_exist = await User.findOne({
-        email,
-        _id: { $ne: new ObjectId(user._id) },
-      }).lean();
-      if (email_exist) return returnMessage("emailExist");
+      // const email_exist = await User.findOne({
+      //   email,
+      //   _id: { $ne: new ObjectId(user._id) },
+      // }).lean();
+      // if (!email_exist) return returnMessage("emailExist");
 
       const existing_user = await User.findById(user._id).lean();
       const valid_old_password = bcrypt.compare(
@@ -401,7 +401,6 @@ class AuthService {
       await User.findByIdAndUpdate(
         user._id,
         {
-          email,
           password: await bcrypt.hash(new_password, 12),
           authenticator_secret: {},
         },
